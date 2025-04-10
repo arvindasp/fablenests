@@ -1,14 +1,13 @@
+export const dynamic = "force-dynamic";
 "use client";
 
-export const dynamic = "force-dynamic";
-
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const wordsPerPage = 100; // Number of words per page
+const wordsPerPage = 100;
 
-export default function StoryBookPage() {
+function StoryReader() {
   const searchParams = useSearchParams();
   const storyParam = searchParams.get("story");
   const titleParam = searchParams.get("title") || "Your Story";
@@ -42,7 +41,7 @@ export default function StoryBookPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5ecd7] flex flex-col items-center justify-center px-6 py-12 font-body text-gray-800">
+    <>
       <div className="text-4xl font-title mb-6 text-center">📖 {titleParam}</div>
 
       <div className="relative w-full max-w-5xl min-h-[400px] bg-white border-2 border-gray-300 rounded-lg shadow-lg p-8 text-xl transition-all duration-300">
@@ -78,6 +77,16 @@ export default function StoryBookPage() {
           Next →
         </button>
       </div>
+    </>
+  );
+}
+
+export default function StoryBookPage() {
+  return (
+    <div className="min-h-screen bg-[#f5ecd7] flex flex-col items-center justify-center px-6 py-12 font-body text-gray-800">
+      <Suspense fallback={<div>Loading story...</div>}>
+        <StoryReader />
+      </Suspense>
     </div>
   );
 }
