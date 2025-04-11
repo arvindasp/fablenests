@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
   const { theme, genre } = await req.json();
 
   try {
-    // Generate a shorter story (250-350 words)
+    // Generate a shorter story (250-350 words) using GPT-3.5
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     });
 
     const story = completion.choices[0].message.content;
-    const title = "Your Story"; // Title fallback for performance
+    const title = "Your Story"; // Fallback title for performance
 
     return NextResponse.json({ story, title });
   } catch (error) {
