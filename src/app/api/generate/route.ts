@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      max_tokens: 600, // reduce length
-      temperature: 0.8, // keep creativity
+      model: "gpt-3.5-turbo", // faster, lower latency
+      max_tokens: 500, // fits well within Vercel's free timeout
+      temperature: 0.8,
       messages: [
         {
           role: "system",
-          content: `You are a children's story writer. Keep the story short (around 300-400 words), imaginative, and fit for bedtime.`,
+          content: `You are a friendly children's author. Write a short bedtime story (250–300 words) based on the given genre and theme.`,
         },
         {
           role: "user",
@@ -26,9 +26,9 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const story = completion.choices[0].message.content;
+    const story = completion.choices[0].message.content?.trim();
 
-    return NextResponse.json({ story, title: "Your Story" });
+    return NextResponse.json({ story });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     return NextResponse.json(
