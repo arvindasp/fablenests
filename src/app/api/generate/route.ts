@@ -15,13 +15,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: `You are a creative assistant that writes short children's bedtime stories (500-700 words). 
-          Your response must include:
-          1. A short and fun title (3-6 words).
-          2. A full story below the title. Format like:
-          Title: The Curious Dragon
-          
-          Once upon a time...`,
+          content: `You are a creative and thoughtful children's book author. Your job is to write short bedtime stories (500-700 words) based on the given genre and theme.`,
         },
         {
           role: "user",
@@ -30,13 +24,9 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const fullText = completion.choices[0].message.content || "";
-    const [titleLine, ...storyLines] = fullText.split("\n").filter(line => line.trim() !== "");
+    const story = completion.choices[0].message.content;
 
-    const title = titleLine.replace(/^Title:\s*/i, "").trim();
-    const story = storyLines.join("\n").trim();
-
-    return NextResponse.json({ title, story });
+    return NextResponse.json({ story, title: "Your Story" });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     return NextResponse.json(
