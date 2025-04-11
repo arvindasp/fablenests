@@ -1,5 +1,4 @@
 export const dynamic = "force-dynamic";
-
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,11 +15,13 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: `You are a creative assistant that writes short bedtime stories (500–700 words) for kids and provides a short title for the story. Return your response in the following JSON format:
-{
-  "title": "...",
-  "story": "..."
-}`,
+          content: `You are a creative assistant that writes short children's bedtime stories (500-700 words). 
+          Your response must include:
+          1. A short and fun title (3-6 words).
+          2. A full story below the title. Format like:
+          Title: The Curious Dragon
+          
+          Once upon a time...`,
         },
         {
           role: "user",
@@ -29,20 +30,13 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const responseText = completion.choices[0].message.content;
+    const fullText = completion.choices[0].message.content || "";
+    const [titleLine, ...storyLines] = fullText.split("\n").filter(line => line.trim() !== "");
 
-    let title = "Untitled";
-    let story = "No story found.";
+    const title = titleLine.replace(/^Title:\s*/i, "").trim();
+    const story = storyLines.join("\n").trim();
 
-    try {
-      const parsed = JSON.parse(responseText || "{}");
-      title = parsed.title || title;
-      story = parsed.story || story;
-    } catch (err) {
-      console.error("Failed to parse OpenAI response:", err);
-    }
-
-    return NextResponse.json({ story, title });
+    return NextResponse.json({ title, story });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     return NextResponse.json(
