@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,14 +11,14 @@ export async function POST(req: NextRequest) {
   const { theme, genre } = await req.json();
 
   try {
-    // Generate short story
+    // Generate a shorter story (250-350 words)
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         {
           role: "system",
           content:
-            "You are a children's story author. Write a very short bedtime story (around 250-350 words) for kids based on the given genre and theme.",
+            "You are a children's story author. Write a short bedtime story (250-350 words) for kids based on the given genre and theme.",
         },
         {
           role: "user",
@@ -27,33 +28,7 @@ export async function POST(req: NextRequest) {
     });
 
     const story = completion.choices[0].message.content;
-
-    // Try to generate a title, fallback if it fails
-    let title = "Your Story";
-
-    try {
-      const titleCompletion = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You generate creative and short story titles for children's stories (3-6 words max).",
-          },
-          {
-            role: "user",
-            content: `Suggest a creative title for this story:\n\n${story}`,
-          },
-        ],
-      });
-
-      const generatedTitle = titleCompletion.choices[0].message.content?.trim();
-      if (generatedTitle) {
-        title = generatedTitle.replaceAll('"', '');
-      }
-    } catch (titleError) {
-      console.warn("Title generation failed, using fallback.");
-    }
+    const title = "Your Story"; // Title fallback for performance
 
     return NextResponse.json({ story, title });
   } catch (error) {
