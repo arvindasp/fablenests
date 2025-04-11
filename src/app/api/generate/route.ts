@@ -12,14 +12,16 @@ export async function POST(req: NextRequest) {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
+      max_tokens: 600, // reduce length
+      temperature: 0.8, // keep creativity
       messages: [
         {
           role: "system",
-          content: `You are a creative and thoughtful children's book author. Your job is to write short bedtime stories (500-700 words) based on the given genre and theme.`,
+          content: `You are a children's story writer. Keep the story short (around 300-400 words), imaginative, and fit for bedtime.`,
         },
         {
           role: "user",
-          content: `Write a ${genre.toLowerCase()} story based on this theme: ${theme}`,
+          content: `Write a short ${genre.toLowerCase()} story for kids based on this theme: ${theme}`,
         },
       ],
     });
