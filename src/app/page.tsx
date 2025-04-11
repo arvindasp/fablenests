@@ -13,17 +13,25 @@ export default function Home() {
   const router = useRouter();
 
   const generateStory = async () => {
+    const allowedPassword = "fablenest42"; // Set your secret password here
+    const enteredPassword = prompt("Enter the access password:");
+  
+    if (enteredPassword !== allowedPassword) {
+      alert("Incorrect password. Access denied.");
+      return;
+    }
+  
     const today = new Date().toISOString().split("T")[0];
     const usage = JSON.parse(localStorage.getItem("dailyUsage") || "{}");
-
+  
     if (usage[today] >= 5) {
       alert("You can only generate 5 stories per day!");
       return;
     }
-
+  
     setLoading(true);
     setStory("");
-
+  
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -32,16 +40,16 @@ export default function Home() {
         },
         body: JSON.stringify({ theme, genre }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+  
       const data = await response.json();
       router.push(
         `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(data.story)}`
       );
-
+  
       const updatedUsage = { ...usage, [today]: (usage[today] || 0) + 1 };
       localStorage.setItem("dailyUsage", JSON.stringify(updatedUsage));
     } catch (error) {
