@@ -1,8 +1,8 @@
 import Link from "next/link";
 import "./globals.css";
 import { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import AuthStatus from "@/components/AuthStatus";
+import AuthProvider from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Bedtimify – AI Bedtime Stories",
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-[#fdf6e3] text-gray-900">
-        <SessionProvider>
+        <AuthProvider>
           <header className="bg-[#fdf6e3] shadow-md p-4 flex justify-between items-center text-lg font-semibold sticky top-0 z-50 px-6">
             <div className="flex gap-8">
               <Link href="/" className="hover:underline">
@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <footer className="bg-[#fdf6e3] text-center text-sm text-gray-600 py-6 border-t border-[#e8dbc7]">
             <p>© {new Date().getFullYear()} Bedtimify. All rights reserved.</p>
           </footer>
-        </SessionProvider>
+        </AuthProvider>
       </body>
     </html>
   );
