@@ -1,7 +1,6 @@
 import Link from "next/link";
 import "./globals.css";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import AuthStatus from "@/components/AuthStatus";
 
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Bedtimify – AI Bedtime Stories",
     description: "Create magical, personalized bedtime stories for kids with one click using AI.",
-    url: "https://fablenests.com", // updated to your real domain
+    url: "https://fablenests.com",
     siteName: "Bedtimify",
     images: [
       {
@@ -31,7 +30,7 @@ export const metadata: Metadata = {
     creator: "@yourhandle",
     images: ["/images/og-image.jpg"],
   },
-};.
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
