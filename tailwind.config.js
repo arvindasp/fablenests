@@ -7,8 +7,13 @@ module.exports = {
       "./components/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-      extend: {},
+      extend: {
+        fontFamily: {
+          body: ['Inter', 'sans-serif'],
+          title: ['Lora', 'serif'],
+        },
+      },
     },
     plugins: [],
-  };
+  }
   

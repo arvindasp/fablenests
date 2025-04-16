@@ -5,19 +5,19 @@ import AuthStatus from "@/components/AuthStatus";
 import AuthProvider from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
-  title: "Bedtimify – AI Bedtime Stories",
+  title: "Fablenests – AI Bedtime Stories",
   description: "Create magical, personalized bedtime stories for kids with one click using AI.",
   openGraph: {
-    title: "Bedtimify – AI Bedtime Stories",
+    title: "Fablenests – AI Bedtime Stories",
     description: "Create magical, personalized bedtime stories for kids with one click using AI.",
     url: "https://fablenests.com",
-    siteName: "Bedtimify",
+    siteName: "Fablenests",
     images: [
       {
         url: "/images/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "AI Bedtime Story Generator",
+        alt: "Fablenests – AI Bedtime Story Generator",
       },
     ],
     locale: "en_US",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bedtimify – AI Bedtime Stories",
+    title: "Fablenests – AI Bedtime Stories",
     description: "Create magical, personalized bedtime stories for kids with one click using AI.",
     creator: "@yourhandle",
     images: ["/images/og-image.jpg"],
@@ -34,23 +34,29 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="font-body">
       <body className="bg-[#fdf6e3] text-gray-900">
         <AuthProvider>
-          <header className="bg-[#fdf6e3] shadow-md p-4 flex justify-between items-center text-lg font-semibold sticky top-0 z-50 px-6">
+          <header className="bg-[#fdf6e3] shadow-md p-4 flex justify-between items-center text-lg font-body sticky top-0 z-50 px-6">
             <div className="flex gap-8">
-              <Link href="/" className="hover:underline">
-                Home
-              </Link>
-              <Link href="/about" className="hover:underline">
-                About Us
-              </Link>
+            <Link
+  href="/"
+  className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded px-1"
+>
+  Home
+</Link>
+<Link
+  href="/about"
+  className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded px-1"
+>
+  About Us
+</Link>
             </div>
             <AuthStatus />
           </header>
-          <main>{children}</main>
-          <footer className="bg-[#fdf6e3] text-center text-sm text-gray-600 py-6 border-t border-[#e8dbc7]">
-            <p>© {new Date().getFullYear()} Bedtimify. All rights reserved.</p>
+          <main className="font-body">{children}</main>
+          <footer className="bg-[#fdf6e3] text-center text-sm text-gray-600 py-6 border-t border-[#e8dbc7] font-body">
+            <p>© {new Date().getFullYear()} Fablenests. All rights reserved.</p>
           </footer>
         </AuthProvider>
       </body>
