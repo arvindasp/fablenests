@@ -18,7 +18,7 @@ export default function AboutPage() {
       {/* Contact Us Box */}
       <div className="max-w-3xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 mb-12 text-lg text-center">
         <h2 className="text-2xl font-title mb-4">Contact Us</h2>
-        <p>If you have reccomendations, feedback, questions, or just want to reach out, feel free to contact us at fablnests@gmail.com, we are very open to conversation.</p>
+        <p>If you have recommendations, feedback, questions, or just want to reach out, feel free to contact us at fablnests@gmail.com, we are very open to conversation.</p>
       </div>
 
       {/* Illustration */}

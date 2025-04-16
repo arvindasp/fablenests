@@ -10,7 +10,10 @@ export default function Home() {
   const [genre, setGenre] = useState("Adventure");
   const [story, setStory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [language, setLanguage] = useState("English");
   const router = useRouter();
+
+  const languages = ["English", "Svenska", "Español", "Français"];
 
   const generateStory = async () => {
     const allowedPassword = "fablenest42";
@@ -36,7 +39,7 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme, genre }),
+        body: JSON.stringify({ theme, genre, language }),
       });
 
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -57,7 +60,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-5xl font-title mb-9 text-center text-[#2f1c12] leading-tight">
-        Fablenests - Create Magical Stories
+        Fablenests – Create Magical Stories
       </h1>
 
       <div className="flex flex-col md:flex-row items-start justify-center gap-10 w-full max-w-6xl">
@@ -73,6 +76,20 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center text-center max-w-xl w-full">
+          <div className="w-full mb-4">
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-4 items-center mb-6 w-full">
             <select
               name="genre"
@@ -100,14 +117,14 @@ export default function Home() {
           </div>
 
           <motion.button
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.98 }}
-  onClick={generateStory}
-  disabled={loading}
-  className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-body mb-8"
->
-  {loading ? "Generating..." : "Generate Story"}
-</motion.button>
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={generateStory}
+            disabled={loading}
+            className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-body mb-8"
+          >
+            {loading ? "Generating..." : "Generate Story"}
+          </motion.button>
 
           {story && (
             <motion.div

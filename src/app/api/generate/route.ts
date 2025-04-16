@@ -8,17 +8,15 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: NextRequest) {
-  const { theme, genre } = await req.json();
+  const { theme, genre, language } = await req.json();
 
   try {
-    // Generate a shorter story (250-350 words) using GPT-3.5
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content:
-            "You are a children's story author. Write a short bedtime story (250-350 words) for kids based on the given genre and theme.",
+          content: `You are a children's story author. Write a short bedtime story (250-350 words) for kids. The story should be a ${genre.toLowerCase()} and written in ${language}.`,
         },
         {
           role: "user",
@@ -28,7 +26,7 @@ export async function POST(req: NextRequest) {
     });
 
     const story = completion.choices[0].message.content;
-    const title = "Your Story"; // Fallback title for performance
+    const title = "Your Story";
 
     return NextResponse.json({ story, title });
   } catch (error) {
