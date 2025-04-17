@@ -1,17 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:wght@400;700&family=Yeseva+One&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Set Lora as the main body font */
 body {
-  @apply bg-[#e9dfcf] text-gray-800 font-[Quicksand];
+  @apply bg-[#e9dfcf] text-gray-800;
+  font-family: 'Lora', serif;
 }
 
+/* Headings use Yeseva One for a storybook feel */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Yeseva One', cursive;
 }
 
+/* Animation: fade-in */
 @keyframes fade-in {
   from {
     opacity: 0;
