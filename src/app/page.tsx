@@ -123,7 +123,7 @@ export default function Home() {
     whileTap={{ scale: 0.98 }}
     onClick={generateStory}
     disabled={loading}
-    className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-body mb-8"
+    className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-[Lora] mb-8"
   >
     {loading ? "Generating..." : "Generate Story"}
   </motion.button>
