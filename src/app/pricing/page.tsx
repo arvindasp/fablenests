@@ -30,12 +30,12 @@ export default function PricingPage() {
             <p className="text-blue-800 mb-4">For little dreamers who want more magic</p>
             <p className="text-3xl font-bold text-blue-900 mb-6">$5<span className="text-base font-normal text-blue-700">/week</span></p>
             <ul className="text-left space-y-2 text-blue-900">
-              <li>✅ Up to 5 stories per day</li>
               <li>✅ Longer stories</li>
-              <li>✅ Audio narration</li>
-              <li>✅ Custom illustrations</li>
-              <li>✅ Save favorite stories</li>
-              <li>✅ Personalize characters</li>
+              <li>✅ Up to 5 stories per day </li>
+              <li>🕐 Audio narration (coming soon)</li>
+              <li>🕐 Save your favorite stories (coming soon)</li>
+              <li>🕐 Custom illustrations (coming soon)</li>
+              <li>🕐 Personalize characters (coming soon)</li>
             </ul>
             <button className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl hover:bg-blue-700 transition">
               Upgrade to Nestling
