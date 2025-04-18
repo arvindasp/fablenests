@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Home() {
   const [theme, setTheme] = useState("");
@@ -14,6 +15,20 @@ export default function Home() {
   const router = useRouter();
 
   const languages = ["English", "Svenska", "Español", "Français"];
+
+  const testInsert = async () => {
+    const { data, error } = await supabase
+      .from("users")
+      .upsert(
+        {
+          email: "test@fablenests.com",
+          plan: "free",
+        },
+        { onConflict: "email" }
+      );
+  
+    console.log("🧪 Supabase insert test:", { data, error });
+  };
 
   const generateStory = async () => {
     const allowedPassword = "fablenest42";
@@ -117,6 +132,12 @@ export default function Home() {
       ))}
     </select>
   </div>
+  <button
+  onClick={testInsert}
+  className="mb-4 px-4 py-2 bg-green-600 text-white rounded"
+>
+  Test Supabase Insert
+</button>
 
   <motion.button
     whileHover={{ scale: 1.05 }}
