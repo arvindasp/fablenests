@@ -14,7 +14,8 @@
     "next-auth": "^4.24.11",
     "openai": "^4.89.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-pageflip": "^2.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",

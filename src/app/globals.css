@@ -49,3 +49,7 @@ button:hover {
   font-weight: bold;
   color: #2f1c12;
 }
+.storybook-flipbook {
+  margin: 0 auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
