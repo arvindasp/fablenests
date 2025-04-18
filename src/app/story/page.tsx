@@ -43,9 +43,9 @@ function StoryReader() {
 
   return (
     <>
-      <div className="text-4xl font-title mb-6 text-center">📖 {titleParam}</div>
+      <div className="text-4xl font-title mb-6 text-center text-[#2f1c12]">📖 {titleParam}</div>
 
-      <div className="relative w-full max-w-5xl min-h-[400px] bg-white border-2 border-gray-300 rounded-lg shadow-lg p-8 text-xl transition-all duration-300">
+      <div className="relative w-full max-w-3xl min-h-[400px] bg-[#fdf6e3] border-4 border-[#e3d8b5] rounded-2xl shadow-xl p-10 text-xl font-[Lora] leading-relaxed text-gray-800 transition-all duration-300 whitespace-pre-line">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}
@@ -59,21 +59,23 @@ function StoryReader() {
         </AnimatePresence>
       </div>
 
-      <div className="flex justify-between items-center mt-6 w-full max-w-5xl px-4">
+      <div className="flex justify-between items-center mt-6 w-full max-w-3xl px-4">
         <button
           onClick={prevPage}
           disabled={currentPage === 0}
-          className="px-5 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 transition-all"
+          className="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 transition-all font-[Lora]"
         >
           ← Prev
         </button>
-        <span className="text-sm text-gray-600">
+
+        <span className="text-sm text-gray-600 font-[Lora]">
           Page {currentPage + 1} of {pages.length}
         </span>
+
         <button
           onClick={nextPage}
           disabled={currentPage === pages.length - 1}
-          className="px-5 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 transition-all"
+          className="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 transition-all font-[Lora]"
         >
           Next →
         </button>
