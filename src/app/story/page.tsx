@@ -47,15 +47,22 @@ function StoryReader() {
 
       <div className="relative w-full max-w-3xl min-h-[400px] bg-[#fdf6e3] border-4 border-[#e3d8b5] rounded-2xl shadow-xl p-10 text-xl font-[Lora] leading-relaxed text-gray-800 transition-all duration-300 whitespace-pre-line">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={currentPage}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.4 }}
-          >
-            {pages[currentPage]}
-          </motion.div>
+        <motion.div
+  key={currentPage}
+  initial={{ opacity: 0, x: 50 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={{ opacity: 0, x: -50 }}
+  transition={{ duration: 0.4 }}
+>
+  {currentPage === 0 ? (
+    <>
+      <span className="drop-cap">{pages[0]?.charAt(0)}</span>
+      {pages[0]?.slice(1)}
+    </>
+  ) : (
+    pages[currentPage]
+  )}
+</motion.div>
         </AnimatePresence>
       </div>
 

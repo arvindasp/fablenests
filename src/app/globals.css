@@ -41,3 +41,11 @@ button:hover {
 .animate-fade-in {
   animation: fade-in 0.6s ease-out forwards;
 }
+.drop-cap {
+  float: left;
+  font-size: 3.2rem;
+  line-height: 1;
+  margin-right: 0.3em;
+  font-weight: bold;
+  color: #2f1c12;
+}
