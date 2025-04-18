@@ -26,12 +26,11 @@ export const authOptions: NextAuthOptions = {
           { onConflict: "email" }
         );
 
-      if (error) {
-        console.error("Supabase user insert error:", error.message);
-        return false;
-      }
-
-      return true;
+        if (error) {
+          console.error("Supabase user insert error:", error.message);
+        }
+        
+        return true;
     },
   },
 };
