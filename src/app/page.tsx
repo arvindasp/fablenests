@@ -117,29 +117,29 @@ export default function Home() {
       ))}
     </select>
   </div>
+
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.98 }}
+    onClick={generateStory}
+    disabled={loading}
+    className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-body mb-8"
+  >
+    {loading ? "Generating..." : "Generate Story"}
+  </motion.button>
+
+  {story && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white/90 p-6 rounded-2xl shadow-xl border-2 border-[#eee3ce] max-w-3xl w-full font-body text-lg leading-relaxed whitespace-pre-line"
+    >
+      {story}
+    </motion.div>
+  )}
 </div>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={generateStory}
-            disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-body mb-8"
-          >
-            {loading ? "Generating..." : "Generate Story"}
-          </motion.button>
-
-          {story && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white/90 p-6 rounded-2xl shadow-xl border-2 border-[#eee3ce] max-w-3xl w-full font-body text-lg leading-relaxed whitespace-pre-line"
-            >
-              {story}
-            </motion.div>
-          )}
-        </div>
 
         <div className="hidden md:block w-64">
           <Image
