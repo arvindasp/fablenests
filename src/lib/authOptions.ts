@@ -1,6 +1,7 @@
 // src/lib/authOptions.ts
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { supabase } from "@/lib/supabase"; // make sure this path matches your project
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,4 +11,27 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+
+  callbacks: {
+    async signIn({ user }) {
+      if (!user?.email) return false;
+
+      const { error } = await supabase
+        .from("users")
+        .upsert(
+          {
+            email: user.email,
+            plan: "free", // default plan
+          },
+          { onConflict: "email" }
+        );
+
+      if (error) {
+        console.error("Supabase user insert error:", error.message);
+        return false;
+      }
+
+      return true;
+    },
+  },
 };
