@@ -76,45 +76,48 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center text-center max-w-xl w-full">
-          <div className="w-full mb-4">
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
-            >
-              {languages.map((lang) => (
-                <option key={lang} value={lang}>
-                  {lang}
-                </option>
-              ))}
-            </select>
-          </div>
+  {/* Theme Input — now at the top and full width */}
+  <div className="w-full mb-4">
+    <input
+      type="text"
+      name="theme"
+      placeholder="Enter a theme..."
+      value={theme}
+      onChange={(e) => setTheme(e.target.value)}
+      className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
+    />
+  </div>
 
-          <div className="flex flex-col md:flex-row gap-4 items-center mb-6 w-full">
-            <select
-              name="genre"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
-            >
-              <option>Adventure</option>
-              <option>Comedy</option>
-              <option>Feel-Good</option>
-              <option>Mystery</option>
-              <option>Magical</option>
-              <option>Sci-Fi</option>
-              <option>Fairy Tale</option>
-            </select>
+  {/* Genre + Language below, side-by-side on md+ screens */}
+  <div className="flex flex-col md:flex-row gap-4 items-center mb-6 w-full">
+    <select
+      name="genre"
+      value={genre}
+      onChange={(e) => setGenre(e.target.value)}
+      className="p-3 rounded-xl border border-gray-300 w-full md:w-1/2 font-body shadow-sm focus:outline-none"
+    >
+      <option>Adventure</option>
+      <option>Comedy</option>
+      <option>Feel-Good</option>
+      <option>Mystery</option>
+      <option>Magical</option>
+      <option>Sci-Fi</option>
+      <option>Fairy Tale</option>
+    </select>
 
-            <input
-              type="text"
-              name="theme"
-              placeholder="Enter a theme..."
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
-            />
-          </div>
+    <select
+      value={language}
+      onChange={(e) => setLanguage(e.target.value)}
+      className="p-3 rounded-xl border border-gray-300 w-full md:w-1/2 font-body shadow-sm focus:outline-none"
+    >
+      {languages.map((lang) => (
+        <option key={lang} value={lang}>
+          {lang}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
 
           <motion.button
             whileHover={{ scale: 1.05 }}
