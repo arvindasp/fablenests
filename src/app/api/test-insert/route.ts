@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function GET() {
   const { data, error } = await supabase
-    .from("users")
+    .from("users2")
     .insert([
       {
         email: "test@api-from-app.com",
