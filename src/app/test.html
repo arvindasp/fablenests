@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <button onclick="send()">Insert into Supabase</button>
+
+    <script>
+      function send() {
+        fetch("https://mcuhbnrfcqktddwvagpb.supabase.co/rest/v1/users", {
+          method: "POST",
+          headers: {
+            apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdWhibnJmY3FrdGRkd3ZhZ3BiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwOTk5NTksImV4cCI6MjA2MDY3NTk1OX0.VEcNhgGeBAq-3j4hloNSHZIpXYi4xaG17X6ou8MZHtA",
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdWhibnJmY3FrdGRkd3ZhZ3BiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwOTk5NTksImV4cCI6MjA2MDY3NTk1OX0.VEcNhgGeBAq-3j4hloNSHZIpXYi4xaG17X6ou8MZHtA",
+            "Content-Type": "application/json",
+            Prefer: "return=representation"
+          },
+          body: JSON.stringify({
+            email: "test@from-local.html",
+            plan: "free"
+          })
+        })
+          .then((res) => res.json())
+          .then(console.log)
+          .catch(console.error);
+      }
+    </script>
+  </body>
+</html>
