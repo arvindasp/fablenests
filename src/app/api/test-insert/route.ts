@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function GET() {
   const { data, error } = await supabase
-    .from("users2") // using the clean table
+    .from("users2")
     .insert([
       {
         email: "test@api-from-app.com",
@@ -20,7 +20,16 @@ export async function GET() {
   console.log("📦 Supabase Insert Result", { data, error });
 
   if (error) {
-    return NextResponse.json({ error: error.message || "Insert failed", details: error.details }, { status: 400 });
+    // 👇 Add this full return block for detailed info
+    return NextResponse.json(
+      {
+        error: error.message || "Insert failed",
+        code: error.code || null,
+        details: error.details || null,
+        hint: error.hint || null,
+      },
+      { status: 400 }
+    );
   }
 
   return NextResponse.json({ data }, { status: 200 });
