@@ -6,6 +6,13 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+console.log("✅ Supabase ENV check:");
+console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+console.log("ANON KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+console.log("✅ Supabase client check:");
+console.log(supabase);
+
 export default function Home() {
   const [theme, setTheme] = useState("");
   const [genre, setGenre] = useState("Adventure");
