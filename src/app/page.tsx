@@ -4,14 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-
-console.log("✅ Supabase ENV check:");
-console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-console.log("ANON KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-
-console.log("✅ Supabase client check:");
-console.log(supabase);
 
 export default function Home() {
   const [theme, setTheme] = useState("");
@@ -22,27 +14,6 @@ export default function Home() {
   const router = useRouter();
 
   const languages = ["English", "Svenska", "Español", "Français"];
-
-  const testInsertUser = async () => {
-    const randomEmail = `testuser-${Math.floor(Math.random() * 10000)}@fablenests.com`;
-
-    const response = await fetch("/api/insert-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: randomEmail, plan: "free" }),
-    });
-
-    const result = await response.json();
-    console.log("✅ Insert User Result:", result);
-
-    if (result.success) {
-      alert(`User ${randomEmail} inserted successfully!`);
-    } else {
-      alert(`Insert failed: ${result.error}`);
-    }
-  };
 
   const generateStory = async () => {
     const allowedPassword = "fablenest42";
@@ -146,14 +117,6 @@ export default function Home() {
               ))}
             </select>
           </div>
-
-          {/* Insert button */}
-          <button
-            onClick={testInsertUser}
-            className="mb-4 px-4 py-2 bg-green-600 text-white rounded"
-          >
-            Test Supabase Insert
-          </button>
 
           {/* Generate Story Button */}
           <motion.button
