@@ -24,17 +24,30 @@ export default function Home() {
   const languages = ["English", "Svenska", "Español", "Français"];
 
   const testInsert = async () => {
-    const { data, error } = await supabase
-      .from("users")
-      .upsert(
-        {
+    try {
+      const response = await fetch("/api/insert-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           email: "test@fablenests.com",
           plan: "free",
-        },
-        { onConflict: "email" }
-      );
+        }),
+      });
   
-    console.log("🧪 Supabase insert test:", { data, error });
+      const result = await response.json();
+      console.log("✅ Insert User Result:", result);
+  
+      if (!response.ok) {
+        alert(`Error inserting user: ${result.error}`);
+      } else {
+        alert("✅ User inserted successfully!");
+      }
+    } catch (error) {
+      console.error("Unexpected error inserting user:", error);
+      alert("Unexpected error inserting user!");
+    }
   };
 
   const generateStory = async () => {

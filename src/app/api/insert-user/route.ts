@@ -1,19 +1,22 @@
 // src/app/api/insert-user/route.ts
+
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!  // Make sure you set this one!
 );
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { email, plan } = body;
+    const { email, plan } = await request.json();
 
     if (!email || !plan) {
-      return NextResponse.json({ error: "Missing email or plan" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing email or plan" },
+        { status: 400 }
+      );
     }
 
     const { data, error } = await supabase
@@ -24,18 +27,22 @@ export async function POST(request: Request) {
       console.error("Supabase error:", error);
       return NextResponse.json(
         {
-          error: error.message || "Insert failed",
-          code: error.code || null,
-          details: error.details || null,
-          hint: error.hint || null,
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
         },
         { status: 400 }
       );
     }
 
     return NextResponse.json({ success: true, data }, { status: 200 });
-  } catch (err) {
-    console.error("Unexpected error:", err);
-    return NextResponse.json({ error: "Unexpected server error" }, { status: 500 });
+
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return NextResponse.json(
+      { error: "Unexpected server error" },
+      { status: 500 }
+    );
   }
 }
