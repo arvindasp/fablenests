@@ -23,30 +23,24 @@ export default function Home() {
 
   const languages = ["English", "Svenska", "Español", "Français"];
 
-  const testInsert = async () => {
-    try {
-      const response = await fetch("/api/insert-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "test@fablenests.com",
-          plan: "free",
-        }),
-      });
-  
-      const result = await response.json();
-      console.log("✅ Insert User Result:", result);
-  
-      if (!response.ok) {
-        alert(`Error inserting user: ${result.error}`);
-      } else {
-        alert("✅ User inserted successfully!");
-      }
-    } catch (error) {
-      console.error("Unexpected error inserting user:", error);
-      alert("Unexpected error inserting user!");
+  const testInsertUser = async () => {
+    const randomEmail = `testuser-${Math.floor(Math.random() * 10000)}@fablenests.com`;
+
+    const response = await fetch("/api/insert-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: randomEmail, plan: "free" }),
+    });
+
+    const result = await response.json();
+    console.log("✅ Insert User Result:", result);
+
+    if (result.success) {
+      alert(`User ${randomEmail} inserted successfully!`);
+    } else {
+      alert(`Insert failed: ${result.error}`);
     }
   };
 
@@ -95,7 +89,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-5xl font-title mb-9 text-center text-[#2f1c12] leading-tight">
-        Fablenests – Craute Magical Stories
+        Fablenests – Create Magical Stories
       </h1>
 
       <div className="flex flex-col md:flex-row items-start justify-center gap-10 w-full max-w-6xl">
@@ -111,76 +105,78 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center text-center max-w-xl w-full">
-  {/* Theme Input — now at the top and full width */}
-  <div className="w-full mb-4">
-    <input
-      type="text"
-      name="theme"
-      placeholder="Enter a theme..."
-      value={theme}
-      onChange={(e) => setTheme(e.target.value)}
-      className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
-    />
-  </div>
+          {/* Theme Input */}
+          <div className="w-full mb-4">
+            <input
+              type="text"
+              name="theme"
+              placeholder="Enter a theme..."
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="p-3 rounded-xl border border-gray-300 w-full font-body shadow-sm focus:outline-none"
+            />
+          </div>
 
-  {/* Genre + Language below, side-by-side on md+ screens */}
-  <div className="flex flex-col md:flex-row gap-4 items-center mb-6 w-full">
-    <select
-      name="genre"
-      value={genre}
-      onChange={(e) => setGenre(e.target.value)}
-      className="p-3 rounded-xl border border-gray-300 w-full md:w-1/2 font-body shadow-sm focus:outline-none"
-    >
-      <option>Adventure</option>
-      <option>Comedy</option>
-      <option>Feel-Good</option>
-      <option>Mystery</option>
-      <option>Magical</option>
-      <option>Sci-Fi</option>
-      <option>Fairy Tale</option>
-    </select>
+          {/* Genre + Language */}
+          <div className="flex flex-col md:flex-row gap-4 items-center mb-6 w-full">
+            <select
+              name="genre"
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+              className="p-3 rounded-xl border border-gray-300 w-full md:w-1/2 font-body shadow-sm focus:outline-none"
+            >
+              <option>Adventure</option>
+              <option>Comedy</option>
+              <option>Feel-Good</option>
+              <option>Mystery</option>
+              <option>Magical</option>
+              <option>Sci-Fi</option>
+              <option>Fairy Tale</option>
+            </select>
 
-    <select
-      value={language}
-      onChange={(e) => setLanguage(e.target.value)}
-      className="p-3 rounded-xl border border-gray-300 w-full md:w-1/2 font-body shadow-sm focus:outline-none"
-    >
-      {languages.map((lang) => (
-        <option key={lang} value={lang}>
-          {lang}
-        </option>
-      ))}
-    </select>
-  </div>
-  <button
-  onClick={testInsert}
-  className="mb-4 px-4 py-2 bg-green-600 text-white rounded"
->
-  Test Supabase Insert
-</button>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="p-3 rounded-xl border border-gray-300 w-full md:w-1/2 font-body shadow-sm focus:outline-none"
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+          </div>
 
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.98 }}
-    onClick={generateStory}
-    disabled={loading}
-    className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-[Lora] mb-8"
-  >
-    {loading ? "Generating..." : "Generate Story"}
-  </motion.button>
+          {/* Insert button */}
+          <button
+            onClick={testInsertUser}
+            className="mb-4 px-4 py-2 bg-green-600 text-white rounded"
+          >
+            Test Supabase Insert
+          </button>
 
-  {story && (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white/90 p-6 rounded-2xl shadow-xl border-2 border-[#eee3ce] max-w-3xl w-full font-body text-lg leading-relaxed whitespace-pre-line"
-    >
-      {story}
-    </motion.div>
-  )}
-</div>
+          {/* Generate Story Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={generateStory}
+            disabled={loading}
+            className="bg-blue-600 text-white px-6 py-2 rounded shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all font-[Lora] mb-8"
+          >
+            {loading ? "Generating..." : "Generate Story"}
+          </motion.button>
 
+          {story && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white/90 p-6 rounded-2xl shadow-xl border-2 border-[#eee3ce] max-w-3xl w-full font-body text-lg leading-relaxed whitespace-pre-line"
+            >
+              {story}
+            </motion.div>
+          )}
+        </div>
 
         <div className="hidden md:block w-64">
           <Image
