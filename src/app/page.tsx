@@ -76,7 +76,6 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center text-center max-w-xl w-full">
-          {/* Theme Input */}
           <div className="w-full mb-4">
             <input
               type="text"
@@ -88,7 +87,6 @@ export default function Home() {
             />
           </div>
 
-          {/* Genre + Language */}
           <div className="flex flex-col md:flex-row gap-4 items-center mb-6 w-full">
             <select
               name="genre"
@@ -118,7 +116,6 @@ export default function Home() {
             </select>
           </div>
 
-          {/* Generate Story Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
