@@ -9,7 +9,8 @@ const supabase = createClient(
 
 export async function POST(request: Request) {
   try {
-    const { email, plan } = await request.json();
+    const body = await request.json();
+    const { email, plan } = body;
 
     if (!email || !plan) {
       return NextResponse.json({ error: "Missing email or plan" }, { status: 400 });
