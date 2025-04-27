@@ -2,9 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +11,7 @@ export async function POST(req: NextRequest) {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: "price_1RIYL3KFKCpChRQvpntr12Is", // <-- REPLACE with your real Live Price ID here
+          price: "price_1RIYL3KFKCpChRQvpntr12Is", // <-- your real Live Price ID
           quantity: 1,
         },
       ],
