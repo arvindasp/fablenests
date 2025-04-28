@@ -1,32 +1,32 @@
 "use client";
 
-import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { getUserPlan } from "@/lib/getUserPlan";
-
+import { useEffect } from "react";
 
 export default function AuthStatus() {
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    async function fetchUserPlan() {
+      if (session?.user?.email) {
+        const plan = await getUserPlan(session.user.email);
+        sessionStorage.setItem("userPlan", plan || "free");
+        console.log("Fetched user plan:", plan);
+      }
+    }
+
+    if (session) {
+      fetchUserPlan();
+    }
+  }, [session]);
 
   if (status === "loading") return <p className="text-sm text-gray-600">Loading...</p>;
 
   if (!session) {
     return (
       <button
-        onClick={async () => {
-          const result = await signIn("google");
-
-          if (result?.ok) {
-            // Get latest session after sign in
-            const newSession = await getSession();
-            const email = newSession?.user?.email;
-
-            if (email) {
-              const plan = await getUserPlan(email);
-              sessionStorage.setItem("userPlan", plan || "free");
-              console.log("User plan set to:", plan);
-            }
-          }
-        }}
+        onClick={() => signIn("google")}
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
       >
         Login
