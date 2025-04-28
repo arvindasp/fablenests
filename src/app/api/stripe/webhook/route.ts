@@ -25,10 +25,25 @@ export async function POST(req: NextRequest) {
   // ✅ Handle the event
   switch (event.type) {
     case "checkout.session.completed":
-      const session = event.data.object as Stripe.Checkout.Session;
-      console.log("Checkout completed!", session);
-      // TODO: Update your user in Supabase here
-      break;
+  const session = event.data.object as Stripe.Checkout.Session;
+  console.log("Checkout completed!", session);
+
+  const email = session.customer_email;
+  if (email) {
+    const { error } = await supabase
+      .from("users")
+      .update({ plan: "nestling" })
+      .eq("email", email);
+
+    if (error) {
+      console.error("Failed to update user plan:", error.message);
+    } else {
+      console.log(`User ${email} upgraded to Nestling plan.`);
+    }
+  } else {
+    console.error("No email found in session.");
+  }
+  break;
     
     case "invoice.payment_failed":
       console.log("Payment failed", event.data.object);
