@@ -1,7 +1,7 @@
 // src/app/api/webhook/route.ts
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
-import { supabase } from "@/lib/supabase"; // keep it, we'll use it soon
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   // no apiVersion needed here anymore
@@ -30,10 +30,10 @@ export async function POST(req: NextRequest) {
 
   const email = session.customer_email;
   if (email) {
-    const { error } = await supabase
-      .from("users")
-      .update({ plan: "nestling" })
-      .eq("email", email);
+    const { error } = await supabaseAdmin
+  .from("users")
+  .update({ plan: "nestling" })
+  .eq("email", email);
 
     if (error) {
       console.error("Failed to update user plan:", error.message);
