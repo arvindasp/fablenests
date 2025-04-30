@@ -11,10 +11,7 @@ export default function AboutPage() {
       <div className="max-w-3xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 mb-8 text-lg text-center space-y-4">
         <p>
           At Fablenests, we believe bedtime is more than routine — it's a moment of wonder, connection, and calm.
-          We craft personalized bedtime stories using artificial intelligence, turning your child’s favorite themes and ideas into magical, one-of-a-kind tales.
-        </p>
-        <p>
-          But our mission goes beyond the screen. A portion of every subscription goes directly to children’s charities — because we believe *every child deserves to feel seen, heard, and valued*.
+          We craft personalized bedtime stories using artificial intelligence, turning your child’s favorite themes and ideas into magical, one-of-a-kind tales. We believe that the best use of AI is to help others, and with our product storytelling is cheaper and more magical than ever before.
         </p>
         <p>
           Whether you're here for a cozy storytime, to inspire imagination, or to enjoy a peaceful end to the day, Fablenests is here to help you build those moments — and to make the world a little gentler while doing it.
@@ -23,12 +20,11 @@ export default function AboutPage() {
 
       {/* Optional Personal Note */}
       <div className="max-w-3xl w-full bg-[#fef9ef] border border-yellow-200 rounded-lg shadow-inner p-4 mb-8 text-base text-center italic">
-        {/* 
-        Optional note from the creator:
+        { 
         <p>
           Hi! I'm the creator of Fablenests. I started this project with the dream of making storytelling more magical and meaningful — for my generation and the next.
         </p>
-        */}
+        }
       </div>
 
       {/* Contact Us */}
@@ -43,7 +39,7 @@ export default function AboutPage() {
             href="mailto:fablnests@gmail.com"
             className="text-blue-600 underline hover:text-blue-800 transition-colors"
           >
-            fablnests@gmail.com
+            fablenests@gmail.com
           </a>
         </p>
       </div>
