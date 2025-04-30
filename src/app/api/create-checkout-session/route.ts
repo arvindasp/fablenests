@@ -1,63 +1,44 @@
+// src/app/api/create-checkout-session/route.ts
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-// Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
 export async function POST(req: NextRequest) {
-  const body = await req.text();
-  const sig = req.headers.get("stripe-signature");
-
-  if (!sig) {
-    console.error("❌ Missing Stripe signature");
-    return new Response("Missing Stripe signature", { status: 400 });
-  }
-
-  let event: Stripe.Event;
-
   try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-    console.log("✅ Webhook received:", event.type);
-  } catch (err: any) {
-    console.error("❌ Webhook signature verification failed:", err.message);
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
-  }
-
-  // Handle successful payment
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const email = session.customer_email;
-
-    console.log("🧾 Checkout Session:", session);
+    const { email } = await req.json();
 
     if (!email) {
-      console.error("❌ Missing customer_email in session object");
-    } else {
-      const { error } = await supabaseAdmin
-        .from("users")
-        .update({ plan: "nestling" })
-        .eq("email", email);
-
-      if (error) {
-        console.error("❌ Failed to update Supabase user plan:", error.message);
-      } else {
-        console.log(`✅ Plan updated to 'nestling' for ${email}`);
-      }
+      return new Response(JSON.stringify({ error: "Missing email" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
-  } else {
-    console.log(`ℹ️ Unhandled event type: ${event.type}`);
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "subscription",
+      customer_email: email,
+      line_items: [
+        {
+          price: process.env.STRIPE_PRICE_ID,
+          quantity: 1,
+        },
+      ],
+      success_url: "https://fablenests.com/success",
+      cancel_url: "https://fablenests.com/pricing",
+    });
+
+    return new Response(JSON.stringify({ url: session.url }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err: any) {
+    console.error("Checkout error:", err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-
-  return new Response("OK", { status: 200 });
 }
-
-// This export is for Next.js to avoid parsing the request body as JSON
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
