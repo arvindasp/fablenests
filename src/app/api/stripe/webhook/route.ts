@@ -45,10 +45,11 @@ export async function POST(req: NextRequest) {
   }
   break;
     
-    case "invoice.payment_failed":
-      console.log("Payment failed", event.data.object);
-      // TODO: Downgrade or notify user here
-      break;
+  case "invoice.payment_failed":
+    console.log("Payment failed", event.data.object);
+    // We’re not downgrading automatically yet — needs more logic
+    // This might be a temporary card issue, so we’ll wait
+    break;
 
     default:
       console.log(`Unhandled event type: ${event.type}`);
