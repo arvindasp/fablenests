@@ -22,7 +22,7 @@ export default function AboutPage() {
         <p>
           Curious about how we give back? Learn more on our{" "}
           <a
-            href="/our-mission"
+            href="/ourMission"
             className="text-blue-600 underline hover:text-blue-800 transition-colors"
           >
             Our Mission
@@ -51,7 +51,7 @@ export default function AboutPage() {
             href="mailto:fablnests@gmail.com"
             className="text-blue-600 underline hover:text-blue-800 transition-colors"
           >
-            fablnests@gmail.com
+            fablenests@gmail.com
           </a>
         </p>
       </div>
