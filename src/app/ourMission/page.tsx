@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function OurMissionPage() {
   return (
     <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
@@ -29,6 +31,18 @@ export default function OurMissionPage() {
         <p className="text-base text-gray-600 italic">
           We're currently selecting our first official partner — updates coming soon.
         </p>
+      </div>
+
+      {/* Illustration */}
+      <div className="w-full max-w-5xl mt-12">
+        <Image
+          src="/images/children-reading.webp"
+          alt="Illustration of diverse children reading together in a magical setting"
+          width={1600}
+          height={400}
+          priority
+          className="mx-auto rounded-md"
+        />
       </div>
     </div>
   );
