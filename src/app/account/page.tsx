@@ -12,13 +12,20 @@ export default function YourAccountPage() {
 
   useEffect(() => {
     const fetchPlan = async () => {
-      if (session?.user?.email) {
-        const userPlan = await getUserPlan(session.user.email);
-        setPlan(userPlan);
+      try {
+        if (session?.user?.email) {
+          const userPlan = await getUserPlan(session.user.email);
+          setPlan(userPlan);
+          console.log("Fetched user plan:", userPlan);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user plan:", error);
+        setPlan(null);
       }
     };
+  
     fetchPlan();
-  }, [session]);
+  }, [session?.user?.email]); // triggers on new logins or account switches
 
   if (status === "loading") {
     return <p className="text-center mt-8 text-gray-600">Loading account info...</p>;
