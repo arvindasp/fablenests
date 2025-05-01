@@ -16,25 +16,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing email" }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    // Check if user already exists
+    const { data: existingUser, error: fetchError } = await supabase
       .from("users")
-      .upsert({ email, plan: "free" }, { onConflict: "email" });
+      .select("id")
+      .eq("email", email)
+      .single();
 
-    if (error) {
-      console.error("Supabase insert error:", error);
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-        },
-        { status: 400 }
-      );
+    if (fetchError && fetchError.code !== "PGRST116") {
+      console.error("Supabase fetch error:", fetchError);
+      return NextResponse.json({ error: fetchError.message }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true, data }, { status: 200 });
+    if (!existingUser) {
+      const { error: insertError } = await supabase
+        .from("users")
+        .insert({ email, plan: "free" });
 
+      if (insertError) {
+        console.error("Supabase insert error:", insertError);
+        return NextResponse.json({ error: insertError.message }, { status: 400 });
+      }
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(
