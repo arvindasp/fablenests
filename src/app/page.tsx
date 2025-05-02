@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-5xl font-title mb-9 text-center text-[#2f1c12] leading-tight">
-        Fablenests – Create Magical Stories
+        Fablenests – Creuate Magical Stories
       </h1>
 
       <div className="flex flex-col md:flex-row items-start justify-center gap-10 w-full max-w-6xl">
