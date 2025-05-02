@@ -1,7 +1,12 @@
 // src/lib/authOptions.ts
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { supabase } from "@/lib/supabase"; // make sure this path matches your project
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // Note: must use SERVICE ROLE here
+);
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,21 +21,33 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }) {
       if (!user?.email) return false;
 
-      const { error } = await supabase
+      const { data: existingUser, error: fetchError } = await supabase
         .from("users")
-        .upsert(
-          {
-            email: user.email,
-            plan: "free", // default plan
-          },
-          { onConflict: "email" }
-        );
+        .select("id")
+        .eq("email", user.email)
+        .single();
 
-        if (error) {
-          console.error("Supabase user insert error:", error.message);
+      if (fetchError && fetchError.code !== "PGRST116") {
+        console.error("❌ Supabase fetch error:", fetchError.message);
+        return false;
+      }
+
+      if (!existingUser) {
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert({ email: user.email, plan: "free" });
+
+        if (insertError) {
+          console.error("❌ Failed to insert new user:", insertError.message);
+          return false;
         }
-        
-        return true;
+
+        console.log(`✅ New user added to Supabase: ${user.email}`);
+      } else {
+        console.log(`ℹ️ User already exists: ${user.email}`);
+      }
+
+      return true;
     },
   },
 };
