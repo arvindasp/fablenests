@@ -40,11 +40,10 @@ export default function PricingPage() {
           </p>
           <ul className="text-left space-y-2 text-blue-900">
             <li>✅ Longer stories</li>
-            <li>✅ Up to 5 stories per week</li>
-            <li>🕐 Audio narration (coming soon)</li>
-            <li>🕐 Save your favorite stories (coming soon)</li>
-            <li>🕐 Custom illustrations (coming soon)</li>
-            <li>🕐 Personalize characters (coming soon)</li>
+            <li>✅ Up to 5 stories per day</li>
+            <li>🕐 Audio narration (coming June 1)</li>
+            <li>🕐 Save your favorite stories (coming June 1)</li>
+            <li>🕐 Custom illustrations (coming June 1)</li>
           </ul>
 
           <div className="mt-6 w-full">
