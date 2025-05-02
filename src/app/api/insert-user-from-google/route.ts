@@ -1,4 +1,3 @@
-// src/app/api/insert-user-from-google/route.ts
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
@@ -15,34 +14,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing email" }, { status: 400 });
     }
 
-    // 🔍 Check if user already exists
-    const { data: existingUser, error: fetchError } = await supabase
+    // Check if user already exists
+    const { data: existing, error: fetchError } = await supabase
       .from("users")
-      .select("plan")
+      .select("id")
       .eq("email", email)
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Fetch error:", fetchError.message);
-      return NextResponse.json({ error: fetchError.message }, { status: 500 });
+      console.error("Supabase fetch error:", fetchError);
+      return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
     }
 
-    // ✅ Only insert if not found
-    if (!existingUser) {
+    if (!existing) {
+      // Insert only if user doesn't exist
       const { error: insertError } = await supabase
         .from("users")
         .insert({ email, plan: "free" });
 
       if (insertError) {
-        console.error("Insert error:", insertError.message);
-        return NextResponse.json({ error: insertError.message }, { status: 500 });
+        console.error("Supabase insert error:", insertError);
+        return NextResponse.json({ error: "Insert failed" }, { status: 500 });
       }
-
-      return NextResponse.json({ success: true, inserted: true }, { status: 200 });
     }
 
-    // ✅ User exists, do nothing
-    return NextResponse.json({ success: true, inserted: false }, { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
 
   } catch (error) {
     console.error("Unexpected error:", error);
