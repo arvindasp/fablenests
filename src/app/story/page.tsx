@@ -6,7 +6,6 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 const HTMLFlipBook = require("react-pageflip").default as any;
 
-
 const wordsPerPage = 100;
 
 function StoryReader() {
@@ -32,42 +31,45 @@ function StoryReader() {
 
   return (
     <>
-      <div className="text-4xl font-title mb-6 text-center text-[#2f1c12]">📖 {titleParam}</div>
+      <h1 className="text-4xl font-title mb-6 text-center text-[#2f1c12] transition-transform duration-300 hover:scale-105 hover:text-[#3d2a1b]">
+  📖 {titleParam}
+</h1>
 
       <HTMLFlipBook
-  width={500}
-  height={600}
-  size="stretch"
-  minWidth={315}
-  maxWidth={600}
-  minHeight={400}
-  maxHeight={800}
-  maxShadowOpacity={0.5}
-  showCover={false}
-  mobileScrollSupport={true}
-  className="storybook-flipbook"
->
-  {pages.map((pageText, index) => (
-    <div
-    key={index}
-    className="bg-[#fdf6e3] text-gray-800 font-[Lora] p-8 text-lg leading-relaxed border-4 border-[#e3d8b5] rounded-2xl shadow-xl whitespace-pre-line overflow-y-auto max-h-[500px]"
-  >
-      {index === 0 ? (
-        <>
-          <span className="drop-cap">{pageText.charAt(0)}</span>
-          {pageText.slice(1)}
-        </>
-      ) : (
-        pageText
-      )}
-    </div>
-  ))}
-</HTMLFlipBook>
+        width={500}
+        height={600}
+        size="stretch"
+        minWidth={315}
+        maxWidth={600}
+        minHeight={400}
+        maxHeight={800}
+        maxShadowOpacity={0.5}
+        showCover={false}
+        mobileScrollSupport={true}
+        className="storybook-flipbook"
+      >
+        {pages.map((pageText, index) => (
+          <div
+            key={index}
+            className="bg-[#fdf6e3] text-gray-800 font-[Lora] p-8 text-lg leading-relaxed border-4 border-[#e3d8b5] rounded-2xl shadow-xl whitespace-pre-line overflow-y-auto max-h-[500px]"
+          >
+            {index === 0 ? (
+              <>
+                <span className="drop-cap text-4xl font-bold float-left mr-2 leading-none">
+                  {pageText.charAt(0)}
+                </span>
+                {pageText.slice(1)}
+              </>
+            ) : (
+              pageText
+            )}
+          </div>
+        ))}
+      </HTMLFlipBook>
 
-
-<p className="mt-6 text-sm font-[Lora] text-gray-600 text-center">
-  Page flipping enabled — tap/click to flip
-</p>
+      <p className="mt-6 text-sm font-[Lora] text-gray-600 text-center">
+        💡 Tap or swipe to flip the page
+      </p>
     </>
   );
 }

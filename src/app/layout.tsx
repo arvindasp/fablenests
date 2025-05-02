@@ -38,8 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="font-body">
       <body className="bg-[#fdf6e3] text-gray-900">
         <AuthProvider>
-        <header className="bg-[#fdf6e3] shadow-md p-4 flex justify-between items-center text-lg font-semibold sticky top-0 z-50 px-6">
-  <div className="flex items-center gap-6">
+        <header className="bg-[#fdf6e3] shadow-md py-3 px-4 md:px-6 flex justify-between items-center text-lg font-semibold sticky top-0 z-50">
+  <div className="flex items-center gap-4 md:gap-6">
     <Link href="/">
       <Image
         src="/images/logo.webp"
@@ -49,17 +49,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="rounded-full"
       />
     </Link>
-    <div className="flex gap-6">
-  <Link href="/" className="hover:underline">
-    Home
-  </Link>
-  <Link href="/about" className="hover:underline">
-    About Us
-  </Link>
-  <Link href="/account" className="hover:underline">
-    Account
-  </Link>
-</div>
+    <nav className="flex gap-4 md:gap-6 text-sm md:text-base">
+      <Link href="/" className="hover:underline">Home</Link>
+      <Link href="/about" className="hover:underline">About Us</Link>
+      <Link href="/account" className="hover:underline">Account</Link>
+    </nav>
   </div>
   <AuthStatus />
 </header>
