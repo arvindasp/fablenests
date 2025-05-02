@@ -61,7 +61,11 @@ export default function YourAccountPage() {
     <p className="text-green-700 font-semibold">Thanks for supporting Fablenests! 💛</p>
     <button
       onClick={async () => {
-        const res = await fetch("/api/create-portal-session", { method: "POST" });
+        const res = await fetch("/api/create-portal-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: session.user?.email }),
+          });
         const data = await res.json();
         if (data.url) {
           window.location.href = data.url;
