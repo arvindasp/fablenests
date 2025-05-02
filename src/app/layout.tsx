@@ -50,13 +50,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       />
     </Link>
     <div className="flex gap-6">
-      <Link href="/" className="hover:underline">
-        Home
-      </Link>
-      <Link href="/about" className="hover:underline">
-        About Us
-      </Link>
-    </div>
+  <Link href="/" className="hover:underline">
+    Home
+  </Link>
+  <Link href="/about" className="hover:underline">
+    About Us
+  </Link>
+  <Link href="/account" className="hover:underline">
+    Account
+  </Link>
+</div>
   </div>
   <AuthStatus />
 </header>
