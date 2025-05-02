@@ -17,31 +17,34 @@ export async function POST(request: Request) {
     // Check if user already exists
     const { data: existing, error: fetchError } = await supabase
       .from("users")
-      .select("id")
+      .select("plan") // plan is enough for checking
       .eq("email", email)
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Supabase fetch error:", fetchError);
-      return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
+      console.error("🔴 Supabase fetch error:", fetchError);
+      return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
     }
 
     if (!existing) {
-      // Insert only if user doesn't exist
       const { error: insertError } = await supabase
         .from("users")
         .insert({ email, plan: "free" });
 
       if (insertError) {
-        console.error("Supabase insert error:", insertError);
+        console.error("🔴 Insert error:", insertError);
         return NextResponse.json({ error: "Insert failed" }, { status: 500 });
       }
+
+      console.log(`✅ New user inserted: ${email}`);
+    } else {
+      console.log(`ℹ️ User already exists: ${email}`);
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true });
 
-  } catch (error) {
-    console.error("Unexpected error:", error);
+  } catch (err) {
+    console.error("❌ Unexpected error:", err);
     return NextResponse.json({ error: "Unexpected server error" }, { status: 500 });
   }
 }
