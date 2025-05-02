@@ -56,9 +56,23 @@ export default function YourAccountPage() {
           </button>
         )}
 
-        {plan === "nestling" && (
-          <p className="text-green-700 font-semibold mt-4">Thanks for supporting Fablenests! 💛</p>
-        )}
+{plan === "nestling" && (
+  <>
+    <p className="text-green-700 font-semibold">Thanks for supporting Fablenests! 💛</p>
+    <button
+      onClick={async () => {
+        const res = await fetch("/api/create-portal-session", { method: "POST" });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      }}
+      className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+    >
+      Manage Subscription
+    </button>
+  </>
+)}
       </div>
     </div>
   );
