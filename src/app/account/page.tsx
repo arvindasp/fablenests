@@ -23,9 +23,9 @@ export default function YourAccountPage() {
         setPlan(null);
       }
     };
-  
+
     fetchPlan();
-  }, [session?.user?.email]); // triggers on new logins or account switches
+  }, [session?.user?.email]);
 
   if (status === "loading") {
     return <p className="text-center mt-8 text-gray-600">Loading account info...</p>;
@@ -44,7 +44,7 @@ export default function YourAccountPage() {
       <h1 className="text-4xl font-title mb-6">Your Account</h1>
 
       <div className="max-w-xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 text-lg space-y-4 text-center">
-      <p><strong>Email:</strong> {session.user?.email}</p>
+        <p><strong>Email:</strong> {session.user?.email}</p>
         <p><strong>Plan:</strong> {plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : "Loading..."}</p>
 
         {plan === "free" && (
@@ -56,27 +56,34 @@ export default function YourAccountPage() {
           </button>
         )}
 
-{plan === "nestling" && (
-  <>
-    <p className="text-green-700 font-semibold">Thanks for supporting Fablenests! 💛</p>
-    <button
-      onClick={async () => {
-        const res = await fetch("/api/create-portal-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: session.user?.email }),
-          });
-        const data = await res.json();
-        if (data.url) {
-          window.location.href = data.url;
-        }
-      }}
-      className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-    >
-      Manage Subscription
-    </button>
-  </>
-)}
+        {plan === "nestling" && (
+          <>
+            <p className="text-green-700 font-semibold">
+              Thanks for supporting Fablenests! 💛
+            </p>
+            <button
+              onClick={async () => {
+                const res = await fetch("/api/create-portal-session", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ email: session.user?.email }),
+                });
+                const data = await res.json();
+                if (data.url) {
+                  window.location.href = data.url;
+                } else {
+                  alert("Could not create portal session.");
+                  console.error("Stripe error:", data.error);
+                }
+              }}
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Manage Subscription
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
