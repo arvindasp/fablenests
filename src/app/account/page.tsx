@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getUserPlan } from "@/lib/getUserPlan";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function YourAccountPage() {
   const { data: session, status } = useSession();
@@ -16,14 +17,12 @@ export default function YourAccountPage() {
         if (session?.user?.email) {
           const userPlan = await getUserPlan(session.user.email);
           setPlan(userPlan);
-          console.log("Fetched user plan:", userPlan);
         }
       } catch (error) {
         console.error("Failed to fetch user plan:", error);
         setPlan(null);
       }
     };
-
     fetchPlan();
   }, [session?.user?.email]);
 
@@ -43,8 +42,23 @@ export default function YourAccountPage() {
     <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-4xl font-title mb-6">Your Account</h1>
 
-      <div className="max-w-xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 text-lg space-y-4 text-center">
-        <p><strong>Email:</strong> {session.user?.email}</p>
+      <div className="max-w-xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 text-lg space-y-6 text-center">
+        {/* Profile Icon */}
+        <div className="flex justify-center">
+        {plan && (
+  <div className="flex justify-center">
+    <Image
+      src={`/images/${plan === "free" ? "hatchling" : "nestling"}.webp`}
+      alt="Owl profile icon"
+      width={80}
+      height={80}
+      className="rounded-full"
+    />
+  </div>
+)}
+        </div>
+
+        <p className="text-xl"><strong>Email:</strong> {session.user?.email}</p>
         <p><strong>Plan:</strong> {plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : "Loading..."}</p>
 
         {plan === "free" && (
@@ -65,9 +79,7 @@ export default function YourAccountPage() {
               onClick={async () => {
                 const res = await fetch("/api/create-portal-session", {
                   method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
+                  headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ email: session.user?.email }),
                 });
                 const data = await res.json();
