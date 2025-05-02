@@ -60,8 +60,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <main className="font-body">{children}</main>
           <footer className="bg-[#fdf6e3] text-center text-sm text-gray-600 py-6 border-t border-[#e8dbc7] font-body">
-            <p>© {new Date().getFullYear()} Fablenests. All rights reserved.</p>
-          </footer>
+  <p>© {new Date().getFullYear()} Fablenests. All rights reserved.</p>
+  <div className="mt-2 space-x-4">
+    <a href="/ourMission" className="hover:underline">
+      Our Mission
+    </a>
+    <a href="/about" className="hover:underline">
+      About Us
+    </a>
+    <a href="/privacy" className="hover:underline">
+      Privacy Policy
+    </a>
+    <a href="/terms" className="hover:underline">
+      Terms of Service
+    </a>
+  </div>
+</footer>
         </AuthProvider>
       </body>
     </html>
