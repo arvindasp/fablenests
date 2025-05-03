@@ -1,15 +1,62 @@
+// /api/generate/route.ts
 export const dynamic = "force-dynamic";
 
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY!,
 });
 
-export async function POST(req: NextRequest) {
-  const { theme, genre, language } = await req.json();
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
+export async function POST(req: NextRequest) {
+  const { theme, genre, language, email } = await req.json();
+
+  if (!email) {
+    return NextResponse.json({ error: "Missing email." }, { status: 400 });
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+
+  // Get user plan
+  const { data: user, error: userError } = await supabase
+    .from("users")
+    .select("plan")
+    .eq("email", email)
+    .single();
+
+  if (userError || !user) {
+    return NextResponse.json({ error: "User not found." }, { status: 404 });
+  }
+
+  const plan = user.plan;
+  const maxStories = plan === "nestling" ? 5 : 1;
+
+  // Check today's usage
+  const { count, error: usageError } = await supabase
+    .from("story_usage")
+    .select("*", { count: "exact", head: true })
+    .eq("email", email)
+    .eq("date", today);
+
+  if (usageError) {
+    console.error("Error checking story usage:", usageError.message);
+    return NextResponse.json({ error: "Failed to check usage." }, { status: 500 });
+  }
+
+  if ((count ?? 0) >= maxStories) {
+    return NextResponse.json(
+      { error: `You've reached your daily limit of ${maxStories} stories.` },
+      { status: 403 }
+    );
+  }
+
+  // Generate story
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -28,11 +75,14 @@ export async function POST(req: NextRequest) {
     const story = completion.choices[0].message.content;
     const title = "Your Story";
 
+    // Log usage
+    await supabase.from("story_usage").insert([{ email, date: today }]);
+
     return NextResponse.json({ story, title });
   } catch (error) {
-    console.error("OpenAI API Error:", error);
+    console.error("OpenAI Error:", error);
     return NextResponse.json(
-      { error: "Failed to generate story." },
+      { error: "Story generation failed." },
       { status: 500 }
     );
   }

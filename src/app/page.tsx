@@ -16,22 +16,6 @@ export default function Home() {
   const languages = ["English", "Svenska", "Español", "Français"];
 
   const generateStory = async () => {
-    const allowedPassword = "fablenest42";
-    const enteredPassword = prompt("Enter the access password:");
-
-    if (enteredPassword !== allowedPassword) {
-      alert("Incorrect password. Access denied.");
-      return;
-    }
-
-    const today = new Date().toISOString().split("T")[0];
-    const usage = JSON.parse(localStorage.getItem("dailyUsage") || "{}");
-
-    if (usage[today] >= 5) {
-      alert("You can only generate 5 stories per day!");
-      return;
-    }
-
     setLoading(true);
     setStory("");
 
@@ -42,16 +26,16 @@ export default function Home() {
         body: JSON.stringify({ theme, genre, language }),
       });
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
       const data = await response.json();
-      router.push(`/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(data.story)}`);
 
-      const updatedUsage = { ...usage, [today]: (usage[today] || 0) + 1 };
-      localStorage.setItem("dailyUsage", JSON.stringify(updatedUsage));
-    } catch (error) {
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong.");
+      }
+
+      router.push(`/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(data.story)}`);
+    } catch (error: any) {
       console.error("Error generating story:", error);
-      alert("Something went wrong while generating your story.");
+      alert(error.message || "Failed to generate story.");
     } finally {
       setLoading(false);
     }
