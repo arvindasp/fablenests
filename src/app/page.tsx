@@ -4,8 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session } = useSession();
   const [theme, setTheme] = useState("");
   const [genre, setGenre] = useState("Adventure");
   const [story, setStory] = useState("");
@@ -16,6 +18,11 @@ export default function Home() {
   const languages = ["English", "Svenska", "Español", "Français"];
 
   const generateStory = async () => {
+    if (!session?.user?.email) {
+      alert("You must be logged in to generate a story.");
+      return;
+    }
+
     setLoading(true);
     setStory("");
 
@@ -23,23 +30,28 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme, genre, language }),
+        body: JSON.stringify({
+          theme,
+          genre,
+          language,
+          email: session.user.email,
+        }),
       });
 
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong.");
-      }
-
-      router.push(`/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(data.story)}`);
-    } catch (error: any) {
+      router.push(
+        `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(data.story)}`
+      );
+    } catch (error) {
       console.error("Error generating story:", error);
-      alert(error.message || "Failed to generate story.");
+      alert("Something went wrong while generating your story.");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
