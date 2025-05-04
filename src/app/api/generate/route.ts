@@ -38,18 +38,21 @@ export async function POST(req: NextRequest) {
   const maxStories = plan === "nestling" ? 5 : 1;
 
   // Check today's usage
-  const { count, error: usageError } = await supabase
+  const { data: existingUsage, error: usageFetchError } = await supabase
     .from("story_usage")
-    .select("*", { count: "exact", head: true })
+    .select("count")
     .eq("email", email)
-    .eq("date", today);
+    .eq("date", today)
+    .single();
 
-  if (usageError) {
-    console.error("Error checking story usage:", usageError.message);
+  if (usageFetchError && usageFetchError.code !== "PGRST116") {
+    console.error("Usage fetch error:", usageFetchError.message);
     return NextResponse.json({ error: "Failed to check usage." }, { status: 500 });
   }
 
-  if ((count ?? 0) >= maxStories) {
+  const currentCount = existingUsage?.count || 0;
+
+  if (currentCount >= maxStories) {
     return NextResponse.json(
       { error: `You've reached your daily limit of ${maxStories} stories.` },
       { status: 403 }
@@ -75,14 +78,21 @@ export async function POST(req: NextRequest) {
     const story = completion.choices[0].message.content;
     const title = "Your Story";
 
-    // Log usage
-    console.log("Inserting usage for:", email, "on", today);
-    const { error: insertError } = await supabase.from("story_usage").insert([{ email, date: today, count: 1 }]);
-
-    
-    if (insertError) {
-      console.error("Insert error:", insertError.message);
+    // Log or update usage
+    if (existingUsage) {
+      const { error: updateError } = await supabase
+        .from("story_usage")
+        .update({ count: currentCount + 1 })
+        .eq("email", email)
+        .eq("date", today);
+      if (updateError) console.error("Update error:", updateError.message);
+    } else {
+      const { error: insertError } = await supabase
+        .from("story_usage")
+        .insert([{ email, date: today, count: 1 }]);
+      if (insertError) console.error("Insert error:", insertError.message);
     }
+
     return NextResponse.json({ story, title });
   } catch (error) {
     console.error("OpenAI Error:", error);
