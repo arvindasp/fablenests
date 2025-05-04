@@ -76,8 +76,12 @@ export async function POST(req: NextRequest) {
     const title = "Your Story";
 
     // Log usage
-    await supabase.from("story_usage").insert([{ email, date: today }]);
-
+    console.log("Inserting usage for:", email, "on", today);
+    const { error: insertError } = await supabase.from("story_usage").insert([{ email, date: today }]);
+    
+    if (insertError) {
+      console.error("Insert error:", insertError.message);
+    }
     return NextResponse.json({ story, title });
   } catch (error) {
     console.error("OpenAI Error:", error);
