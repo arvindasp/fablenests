@@ -78,26 +78,16 @@ export async function POST(req: NextRequest) {
     const title = "Your Story";
 
     // Update or insert usage
-    if (usageData) {
-      const { error: updateError } = await supabase
-        .from("story_usage")
-        .update({ count: currentCount + 1 })
-        .eq("email", email)
-        .eq("date", today);
+    const { error: upsertError } = await supabase
+  .from("story_usage")
+  .upsert(
+    [{ email, date: today, count: currentCount + 1 }],
+    { onConflict: "email,date" }
+  );
 
-      if (updateError) {
-        console.error("Update error:", updateError.message);
-      }
-    } else {
-      const { error: insertError } = await supabase
-        .from("story_usage")
-        .insert([{ email, date: today, count: 1 }]);
-
-      if (insertError) {
-        console.error("Insert error:", insertError.message);
-      }
-    }
-
+if (upsertError) {
+  console.error("Upsert error:", upsertError.message);
+}
     return NextResponse.json({ story, title });
   } catch (error) {
     console.error("OpenAI Error:", error);
