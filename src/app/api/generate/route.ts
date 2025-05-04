@@ -38,19 +38,19 @@ export async function POST(req: NextRequest) {
   const maxStories = plan === "nestling" ? 5 : 1;
 
   // Check today's usage
-  const { data: existingUsage, error: usageFetchError } = await supabase
+  const { data: usageData, error: usageError } = await supabase
     .from("story_usage")
     .select("count")
     .eq("email", email)
     .eq("date", today)
-    .single();
+    .maybeSingle();
 
-  if (usageFetchError && usageFetchError.code !== "PGRST116") {
-    console.error("Usage fetch error:", usageFetchError.message);
+  if (usageError) {
+    console.error("Error checking story usage:", usageError.message);
     return NextResponse.json({ error: "Failed to check usage." }, { status: 500 });
   }
 
-  const currentCount = existingUsage?.count || 0;
+  const currentCount = usageData?.count || 0;
 
   if (currentCount >= maxStories) {
     return NextResponse.json(
@@ -59,7 +59,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Generate story
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -78,19 +77,25 @@ export async function POST(req: NextRequest) {
     const story = completion.choices[0].message.content;
     const title = "Your Story";
 
-    // Log or update usage
-    if (existingUsage) {
+    // Update or insert usage
+    if (usageData) {
       const { error: updateError } = await supabase
         .from("story_usage")
         .update({ count: currentCount + 1 })
         .eq("email", email)
         .eq("date", today);
-      if (updateError) console.error("Update error:", updateError.message);
+
+      if (updateError) {
+        console.error("Update error:", updateError.message);
+      }
     } else {
       const { error: insertError } = await supabase
         .from("story_usage")
         .insert([{ email, date: today, count: 1 }]);
-      if (insertError) console.error("Insert error:", insertError.message);
+
+      if (insertError) {
+        console.error("Insert error:", insertError.message);
+      }
     }
 
     return NextResponse.json({ story, title });
