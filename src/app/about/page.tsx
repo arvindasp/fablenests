@@ -35,7 +35,7 @@ export default function AboutPage() {
       <div className="max-w-3xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 mb-8 text-lg text-center">
         <h2 className="text-2xl font-title mb-4">A Little Something from the Creator</h2>
         <p>
-          Hi! I'm the creator of Fablenests. I started this project with the dream of making storytelling more magical and meaningful — for my generation and the next.
+          Hi! I'm the creator of Fablenests. I started this project with the dream of making storytelling more magical and meaningful, mixing beatiful stories with new technology — for my generation and the next.
         </p>
       </div>
 
