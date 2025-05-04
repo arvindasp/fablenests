@@ -77,7 +77,8 @@ export async function POST(req: NextRequest) {
 
     // Log usage
     console.log("Inserting usage for:", email, "on", today);
-    const { error: insertError } = await supabase.from("story_usage").insert([{ email, date: today }]);
+    const { error: insertError } = await supabase.from("story_usage").insert([{ email, date: today, count: 1 }]);
+
     
     if (insertError) {
       console.error("Insert error:", insertError.message);
