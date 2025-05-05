@@ -78,11 +78,11 @@ export async function POST(req: NextRequest) {
     const title = "Your Story";
 
     // Update or insert usage
-    const { error: upsertError } = await supabase
+    const { error: upsertError } = await (supabase as any)
   .from("story_usage")
   .upsert(
-    [{ email, date: today, count: currentCount + 1 }],
-    { onConflict: "email,date" }
+    [{ email, date: today, count: 1 }],
+    { onConflict: ["email", "date"] }
   );
 
 if (upsertError) {
