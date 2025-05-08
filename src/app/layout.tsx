@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: "Fablenests",
     images: [
       {
-        url: "https://fablenests.com/images/og-image.jpg",
+        url: "/images/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Fablenests – AI Bedtime Story Generator",
