@@ -37,20 +37,20 @@ export async function POST(req: NextRequest) {
   const plan = user.plan;
   const maxStories = plan === "nestling" ? 5 : 1;
 
-  // Check today's usage
-  const { data: usageData, error: usageError } = await supabase
+  // Get current usage for today
+  const { data: usage, error: usageError } = await supabase
     .from("story_usage")
     .select("count")
     .eq("email", email)
     .eq("date", today)
-    .maybeSingle();
+    .single();
 
-  if (usageError) {
-    console.error("Error checking story usage:", usageError.message);
+  if (usageError && usageError.code !== "PGRST116") {
+    console.error("Usage check failed:", usageError.message);
     return NextResponse.json({ error: "Failed to check usage." }, { status: 500 });
   }
 
-  const currentCount = usageData?.count || 0;
+  const currentCount = usage?.count ?? 0;
 
   if (currentCount >= maxStories) {
     return NextResponse.json(
@@ -77,22 +77,23 @@ export async function POST(req: NextRequest) {
     const story = completion.choices[0].message.content;
     const title = "Your Story";
 
-    // Update or insert usage
-    const { error: upsertError } = await (supabase as any)
-  .from("story_usage")
-  .upsert(
-    [{ email, date: today, count: 1 }],
-    { onConflict: ["email", "date"] }
-  );
+    // Upsert usage
+    const { error: upsertError } = await supabase
+    .from("story_usage")
+    .upsert(
+      [{ email, date: today, count: currentCount + 1 }],
+      { ignoreDuplicates: false, onConflict: "email,date" }
+    );
 
-if (upsertError) {
-  console.error("Upsert error:", upsertError.message);
-}
+    if (upsertError) {
+      console.error("Upsert error:", upsertError.message);
+    }
+
     return NextResponse.json({ story, title });
   } catch (error) {
     console.error("OpenAI Error:", error);
     return NextResponse.json(
-      { error: "Story generation failed." },
+      { error: "Something went wrong while generating your story." },
       { status: 500 }
     );
   }
