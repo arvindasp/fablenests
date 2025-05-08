@@ -38,9 +38,12 @@ export default function Home() {
         }),
       });
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
       const data = await response.json();
+
+if (!response.ok) {
+  alert(data.error || "Something went wrong while generating your story.");
+  return;
+}
       router.push(
         `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(data.story)}`
       );
