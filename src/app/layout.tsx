@@ -1,3 +1,4 @@
+// app/layout.tsx
 import Link from "next/link";
 import "./globals.css";
 import { Metadata } from "next";
@@ -7,10 +8,12 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Fablenests – AI Bedtime Stories",
-  description: "Create magical, personalized bedtime stories for kids with one click using AI.",
+  description:
+    "Create magical, personalized bedtime stories for kids with one click using AI.",
   openGraph: {
     title: "Fablenests – AI Bedtime Stories",
-    description: "Create magical, personalized bedtime stories for kids with one click using AI.",
+    description:
+      "Create magical, personalized bedtime stories for kids with one click using AI.",
     url: "https://fablenests.com",
     siteName: "Fablenests",
     images: [
@@ -27,7 +30,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Fablenests – AI Bedtime Stories",
-    description: "Create magical, personalized bedtime stories for kids with one click using AI.",
+    description:
+      "Create magical, personalized bedtime stories for kids with one click using AI.",
     creator: "@yourhandle",
     images: ["/images/og-image.jpg"],
   },
@@ -36,46 +40,69 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="font-body">
-      <body className="bg-[#fdf6e3] text-gray-900">
+      <body className="bg-story-bg text-gray-900">
         <AuthProvider>
-        <header className="bg-[#fdf6e3] shadow-md py-3 px-4 md:px-6 flex justify-between items-center text-lg font-semibold sticky top-0 z-50">
-  <div className="flex items-center gap-4 md:gap-6">
-    <Link href="/">
-      <Image
-        src="/images/logo.webp"
-        alt="Fablenests logo"
-        width={40}
-        height={40}
-        className="rounded-full"
-      />
-    </Link>
-    <nav className="flex gap-4 md:gap-6 text-sm md:text-base">
-      <Link href="/" className="hover:underline">Home</Link>
-      <Link href="/about" className="hover:underline">About Us</Link>
-      <Link href="/account" className="hover:underline">Account</Link>
-    </nav>
-  </div>
-  <AuthStatus />
-</header>
+          <header className="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-sm shadow-md">
+            <div className="max-w-6xl mx-auto flex items-center justify-between py-3 px-6">
+              <div className="flex items-center space-x-4">
+                <Link href="/" className="flex items-center">
+                  <Image
+                    src="/images/logo.webp"
+                    alt="Fablenests logo"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                  <span className="ml-2 text-2xl font-title text-story-accent">
+                    Fablenests
+                  </span>
+                </Link>
+                <nav className="hidden md:flex space-x-6 text-story-accent font-body">
+                  <Link
+                    href="/"
+                    className="hover:text-story-accent/80 transition"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="hover:text-story-accent/80 transition"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    href="/account"
+                    className="hover:text-story-accent/80 transition"
+                  >
+                    Account
+                  </Link>
+                </nav>
+              </div>
+              <div>
+                <AuthStatus />
+              </div>
+            </div>
+          </header>
 
-          <main className="font-body">{children}</main>
-          <footer className="bg-[#fdf6e3] text-center text-sm text-gray-600 py-6 border-t border-[#e8dbc7] font-body">
-  <p>© {new Date().getFullYear()} Fablenests. All rights reserved.</p>
-  <div className="mt-2 space-x-4">
-    <a href="/ourMission" className="hover:underline">
-      Our Mission
-    </a>
-    <a href="/about" className="hover:underline">
-      About Us
-    </a>
-    <a href="/privacy" className="hover:underline">
-      Privacy Policy
-    </a>
-    <a href="/terms" className="hover:underline">
-      Terms of Service
-    </a>
-  </div>
-</footer>
+          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+
+          <footer className="bg-white/70 backdrop-blur-sm text-center text-sm text-gray-600 py-6 border-t border-storybook-border font-body">
+            <p>© {new Date().getFullYear()} Fablenests. All rights reserved.</p>
+            <div className="mt-2 space-x-4">
+              <Link href="/ourMission" className="hover:text-story-accent/80">
+                Our Mission
+              </Link>
+              <Link href="/about" className="hover:text-story-accent/80">
+                About Us
+              </Link>
+              <Link href="/privacy" className="hover:text-story-accent/80">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-story-accent/80">
+                Terms of Service
+              </Link>
+            </div>
+          </footer>
         </AuthProvider>
       </body>
     </html>
