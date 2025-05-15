@@ -2,8 +2,8 @@
 import Link from "next/link";
 import "./globals.css";
 import { Metadata } from "next";
-import AuthStatus from "@/components/AuthStatus";
 import AuthProvider from "@/components/AuthProvider";
+import AuthStatus from "@/components/AuthStatus";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -40,65 +40,62 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="font-body">
-      <body className="bg-story-bg text-gray-900">
+      <body className="bg-story-bg text-story-accent">
         <AuthProvider>
-          <header className="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-sm shadow-md">
-            <div className="max-w-6xl mx-auto flex items-center justify-between py-3 px-6">
-              <div className="flex items-center space-x-4">
-                <Link href="/" className="flex items-center">
-                  <Image
-                    src="/images/logo.webp"
-                    alt="Fablenests logo"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                  <span className="ml-2 text-2xl font-title text-story-accent">
-                    Fablenests
-                  </span>
-                </Link>
-                <nav className="hidden md:flex space-x-6 text-story-accent font-body">
-                  <Link
-                    href="/"
-                    className="hover:text-story-accent/80 transition"
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="hover:text-story-accent/80 transition"
-                  >
-                    About Us
-                  </Link>
-                  <Link
-                    href="/account"
-                    className="hover:text-story-accent/80 transition"
-                  >
-                    Account
-                  </Link>
-                </nav>
-              </div>
-              <div>
-                <AuthStatus />
-              </div>
-            </div>
-          </header>
+        <header className="sticky top-0 z-50 w-full bg-story-bg shadow-md">
+  <div className="max-w-6xl mx-auto flex items-center py-5 px-8 md:px-12">
+    {/* Left: Logo */}
+    <div className="flex items-center space-x-3">
+      <Link href="/" className="flex items-center">
+        <Image
+          src="/images/logo.webp"
+          alt="Fablenests logo"
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
+        <span className="text-2xl font-title">Fablenests</span>
+      </Link>
+    </div>
 
-          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+    {/* Center: Nav */}
+    <nav className="hidden md:flex flex-1 justify-center space-x-10 font-body">
+      <Link href="/" className="hover:underline transition">
+        Home
+      </Link>
+      <Link href="/about" className="hover:underline transition">
+        About Us
+      </Link>
+      <Link href="/account" className="hover:underline transition">
+        Account
+      </Link>
+    </nav>
 
-          <footer className="bg-white/70 backdrop-blur-sm text-center text-sm text-gray-600 py-6 border-t border-storybook-border font-body">
+    {/* Right: Auth */}
+    <div className="hidden md:block">
+      <AuthStatus />
+    </div>
+  </div>
+</header>
+
+
+          <main className="min-h-[calc(100vh-4.5rem)]">
+            {children}
+          </main>
+
+          <footer className="bg-story-bg border-t border-storybook-border text-center text-sm text-story-accent py-6">
             <p>© {new Date().getFullYear()} Fablenests. All rights reserved.</p>
-            <div className="mt-2 space-x-4">
-              <Link href="/ourMission" className="hover:text-story-accent/80">
+            <div className="mt-2 space-x-6 font-body">
+              <Link href="/ourMission" className="hover:underline transition">
                 Our Mission
               </Link>
-              <Link href="/about" className="hover:text-story-accent/80">
+              <Link href="/about" className="hover:underline transition">
                 About Us
               </Link>
-              <Link href="/privacy" className="hover:text-story-accent/80">
+              <Link href="/privacy" className="hover:underline transition">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="hover:text-story-accent/80">
+              <Link href="/terms" className="hover:underline transition">
                 Terms of Service
               </Link>
             </div>

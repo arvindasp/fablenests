@@ -45,8 +45,8 @@ export default function HomePage() {
           data.story
         )}`
       );
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       alert("Something went wrong while generating your story.");
     } finally {
       setLoading(false);
@@ -54,32 +54,30 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-story-bg text-gray-800 font-body flex flex-col items-center px-4 py-12">
-      <h1 className="text-5xl font-title mb-12 text-center text-story-accent leading-tight">
-        Fablenests
+    <div className="min-h-screen bg-story-bg text-story-accent font-body flex flex-col items-center px-6 py-16">
+      {/* Page Title */}
+      <h1 className="text-5xl md:text-5xl font-title mb-10 text-center leading-snug">
+        Fablenests -
         <br />
         Create Magical Stories
       </h1>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-12 w-full max-w-6xl">
-        {/* Left illustration */}
-        <motion.div
-          className="hidden md:block bg-white/90 p-4 rounded-2xl shadow-storybook"
-          animate={{ y: [0, 12, 0] }}
-          transition={{ repeat: Infinity, duration: 6 }}
-        >
+      {/* Main Content */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-16 w-full max-w-6xl">
+        {/* Left Illustration */}
+        <div className="hidden md:block">
           <Image
             src="/images/monkey-fox.webp"
             alt="Monkey and Fox"
-            width={300}
-            height={300}
+            width={260}
+            height={260}
             priority
-            className="rounded-xl"
+            className="rounded-2xl drop-shadow-storybook"
           />
-        </motion.div>
+        </div>
 
-        {/* Form */}
-        <div className="w-full max-w-xl space-y-6 text-center">
+        {/* Form Card */}
+        <div className="w-full max-w-lg bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-storybook text-center space-y-6">
           <input
             type="text"
             placeholder="Enter a theme…"
@@ -88,14 +86,16 @@ export default function HomePage() {
             className="w-full p-3 rounded-xl border border-gray-300 font-body shadow-sm focus:outline-none focus:ring-2 focus:ring-story-accent/50 transition"
           />
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <select
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
               className="flex-1 p-3 rounded-xl border border-gray-300 font-body shadow-sm focus:outline-none focus:ring-2 focus:ring-story-accent/50 transition"
             >
               {genres.map((g) => (
-                <option key={g}>{g}</option>
+                <option key={g} value={g}>
+                  {g}
+                </option>
               ))}
             </select>
 
@@ -105,51 +105,40 @@ export default function HomePage() {
               className="flex-1 p-3 rounded-xl border border-gray-300 font-body shadow-sm focus:outline-none focus:ring-2 focus:ring-story-accent/50 transition"
             >
               {languages.map((l) => (
-                <option key={l}>{l}</option>
+                <option key={l} value={l}>
+                  {l}
+                </option>
               ))}
             </select>
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={generateStory}
-            disabled={loading}
-            className="w-full md:w-auto bg-storybook-btn px-8 py-3 rounded-lg text-white font-title shadow-storybook hover:bg-storybook-btn-hover focus:outline-none focus:ring-2 focus:ring-storybook-btn/50 transition"
-          >
-            {loading ? "Generating…" : "Generate Story"}
-          </motion.button>
-
-          {/** If you want inline previews, keep this; otherwise you’ll push to /story **/}
-          {/*
-          {story && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white/90 p-6 rounded-2xl shadow-xl border-2 border-storybook-border font-body text-lg leading-relaxed whitespace-pre-line"
-            >
-              {story}
-            </motion.div>
-          )}
-          */}
+  onClick={generateStory}
+  disabled={loading}
+  className="
+    text-story-accent font-bold text-xl
+    bg-transparent border-none
+    px-2 py-1
+    hover:underline
+    focus:outline-none focus:ring-0
+    transition
+  "
+>
+  {loading ? "Generating…" : "Generate Story"}
+</motion.button>
         </div>
 
-        {/* Right illustration */}
-        <motion.div
-          className="hidden md:block bg-white/90 p-4 rounded-2xl shadow-storybook"
-          animate={{ y: [0, -12, 0] }}
-          transition={{ repeat: Infinity, duration: 6 }}
-        >
+        {/* Right Illustration */}
+        <div className="hidden md:block">
           <Image
             src="/images/dolphin.webp"
             alt="Dolphin leaping"
-            width={300}
-            height={300}
+            width={260}
+            height={260}
             priority
-            className="rounded-xl"
+            className="rounded-2xl drop-shadow-storybook"
           />
-        </motion.div>
+        </div>
       </div>
     </div>
   );

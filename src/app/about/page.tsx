@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
+    <div className="min-h-screen bg-story-bg text-story-accent font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-5xl font-title mb-8 text-center">About Us</h1>
 
       {/* Main About Box */}

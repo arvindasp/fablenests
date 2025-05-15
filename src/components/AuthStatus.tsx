@@ -26,11 +26,18 @@ export default function AuthStatus() {
   if (!session) {
     return (
       <button
-        onClick={() => signIn("google")}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
-      >
-        Login
-      </button>
+  onClick={() => signIn("google")}
+  className="
+    text-story-accent font-body
+    hover:underline
+    bg-transparent border-none
+    px-2 py-1
+    focus:outline-none focus:ring-0
+    transition
+  "
+>
+  Login
+</button>
     );
   }
 
