@@ -39,7 +39,7 @@ export default function YourAccountPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5ecd7] text-gray-800 font-body flex flex-col items-center px-4 py-12">
+    <div className="min-h-screen bg-story-bg text-story-accent font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-4xl font-title mb-6">Your Account</h1>
 
       <div className="max-w-xl w-full bg-white border border-gray-300 rounded-lg shadow-md p-6 text-lg space-y-6 text-center">
@@ -50,8 +50,8 @@ export default function YourAccountPage() {
     <Image
       src={`/images/${plan === "free" ? "hatchling" : "nestling"}.webp`}
       alt="Owl profile icon"
-      width={80}
-      height={80}
+      width={120}
+      height={120}
       className="rounded-full"
     />
   </div>
@@ -90,7 +90,15 @@ export default function YourAccountPage() {
                   console.error("Stripe error:", data.error);
                 }
               }}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              className="
+mt-4
+text-story-accent font-body
+bg-transparent border-none
+px-2 py-1
+hover:underline
+focus:outline-none focus:ring-0
+transition
+"
             >
               Manage Subscription
             </button>

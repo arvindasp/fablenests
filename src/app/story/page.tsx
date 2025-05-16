@@ -19,7 +19,7 @@ function StoryReader() {
   useEffect(() => {
     if (storyParam) {
       const words = storyParam.split(" ");
-      const pageChunks = [];
+      const pageChunks: string[] = [];
 
       for (let i = 0; i < words.length; i += wordsPerPage) {
         pageChunks.push(words.slice(i, i + wordsPerPage).join(" "));
@@ -31,9 +31,9 @@ function StoryReader() {
 
   return (
     <>
-      <h1 className="text-4xl font-title mb-6 text-center text-[#2f1c12] transition-transform duration-300 hover:scale-105 hover:text-[#3d2a1b]">
-  📖 {titleParam}
-</h1>
+      <h1 className="text-4xl font-title mb-6 text-center text-story-accent transition-transform duration-300 hover:scale-105 hover:text-story-accent/80">
+        📖 {titleParam}
+      </h1>
 
       <HTMLFlipBook
         width={500}
@@ -51,7 +51,15 @@ function StoryReader() {
         {pages.map((pageText, index) => (
           <div
             key={index}
-            className="bg-[#fdf6e3] text-gray-800 font-[Lora] p-8 text-lg leading-relaxed border-4 border-[#e3d8b5] rounded-2xl shadow-xl whitespace-pre-line overflow-y-auto max-h-[500px]"
+            className="
+              bg-white
+              text-story-accent
+              font-body
+              p-8 text-lg leading-relaxed
+              border-4 border-story-accent
+              rounded-2xl shadow-xl
+              whitespace-pre-line overflow-y-auto max-h-[500px]
+            "
           >
             {index === 0 ? (
               <>
@@ -67,7 +75,7 @@ function StoryReader() {
         ))}
       </HTMLFlipBook>
 
-      <p className="mt-6 text-sm font-[Lora] text-gray-600 text-center">
+      <p className="mt-6 text-sm font-body text-story-accent/70 text-center">
         💡 Tap or swipe to flip the page
       </p>
     </>
@@ -76,7 +84,7 @@ function StoryReader() {
 
 export default function StoryBookPage() {
   return (
-    <div className="min-h-screen bg-[#f5ecd7] flex flex-col items-center justify-center px-6 py-12 font-body text-gray-800">
+    <div className="min-h-screen bg-story-bg flex flex-col items-center justify-center px-6 py-12 font-body text-story-accent">
       <Suspense fallback={<div>Loading story...</div>}>
         <StoryReader />
       </Suspense>
