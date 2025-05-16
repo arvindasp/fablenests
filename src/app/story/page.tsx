@@ -52,14 +52,14 @@ function StoryReader() {
           <div
             key={index}
             className="
-              bg-white
-              text-story-accent
-              font-body
-              p-8 text-lg leading-relaxed
-              border-4 border-story-accent
-              rounded-2xl shadow-xl
-              whitespace-pre-line overflow-y-auto max-h-[500px]
-            "
+  bg-white
+  text-story-accent
+  font-body
+  p-8 text-lg leading-relaxed
+  border-4 border-storybook-border
+  rounded-2xl shadow-xl
+  whitespace-pre-line overflow-y-auto max-h-[500px]
+"
           >
             {index === 0 ? (
               <>
