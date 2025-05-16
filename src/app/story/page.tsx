@@ -4,36 +4,67 @@ export const dynamic = "force-dynamic";
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 const HTMLFlipBook = require("react-pageflip").default as any;
 
 const wordsPerPage = 100;
 
 function StoryReader() {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
-  const storyParam = searchParams.get("story");
+  const storyParam = searchParams.get("story") || "";
   const titleParam = searchParams.get("title") || "Your Story";
 
   const [pages, setPages] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (storyParam) {
       const words = storyParam.split(" ");
       const pageChunks: string[] = [];
-
       for (let i = 0; i < words.length; i += wordsPerPage) {
         pageChunks.push(words.slice(i, i + wordsPerPage).join(" "));
       }
-
       setPages(pageChunks);
     }
   }, [storyParam]);
 
+  const handleSave = async () => {
+    setSaving(true);
+    const res = await fetch("/api/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: titleParam, story: storyParam }),
+    });
+    if (res.ok) setSaved(true);
+    else console.error(await res.json());
+    setSaving(false);
+  };
+
   return (
     <>
-      <h1 className="text-4xl font-title mb-6 text-center text-story-accent transition-transform duration-300 hover:scale-105 hover:text-story-accent/80">
-        📖 {titleParam}
-      </h1>
+      <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-3xl mb-6 px-4">
+        <h1 className="text-4xl font-title text-story-accent">
+          📖 {titleParam}
+        </h1>
+        {session?.user?.email && (
+          <button
+            onClick={handleSave}
+            disabled={saving || saved}
+            className={`
+              text-story-accent font-body
+              bg-transparent border-none
+              px-2 py-1 rounded-lg
+              ${saved ? "opacity-50 cursor-default" : "hover:underline"}
+              focus:outline-none focus:ring-0
+              transition
+            `}
+          >
+            {saving ? "Saving…" : saved ? "Saved!" : "Save to Favorites"}
+          </button>
+        )}
+      </div>
 
       <HTMLFlipBook
         width={500}
@@ -52,14 +83,14 @@ function StoryReader() {
           <div
             key={index}
             className="
-  bg-white
-  text-story-accent
-  font-body
-  p-8 text-lg leading-relaxed
-  border-4 border-storybook-border
-  rounded-2xl shadow-xl
-  whitespace-pre-line overflow-y-auto max-h-[500px]
-"
+              bg-white
+              text-story-accent
+              font-body
+              p-8 text-lg leading-relaxed
+              border-4 border-storybook-border
+              rounded-2xl shadow-xl
+              whitespace-pre-line overflow-y-auto max-h-[500px]
+            "
           >
             {index === 0 ? (
               <>
