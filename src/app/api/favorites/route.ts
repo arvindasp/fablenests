@@ -1,9 +1,35 @@
 // src/app/api/favorites/route.ts
-import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";  // service-role for writes
+import { supabase } from "@/lib/supabase";            // anon for reads
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
-import { supabase } from "@/lib/supabase";
 
+// POST /api/favorites
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+  }
+
+  const { title, story } = await req.json();
+  if (!title || !story) {
+    return NextResponse.json({ error: "Missing title or story." }, { status: 400 });
+  }
+
+  const { error: insertError } = await supabaseAdmin
+    .from("favorites")
+    .insert({ email: session.user.email, title, story, created_at: new Date() });
+
+  if (insertError) {
+    console.error("Supabase insert error:", insertError);
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ message: "Saved to favorites!" });
+}
+
+// GET /api/favorites
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -20,5 +46,6 @@ export async function GET() {
     console.error("Supabase GET error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
   return NextResponse.json(data);
 }
