@@ -15,28 +15,26 @@ export default function YourAccountPage() {
   const router = useRouter();
   const [favorites, setFavorites] = useState<Favorite[]>([]);
 
+  // Fetch user plan
   useEffect(() => {
-    const fetchPlan = async () => {
-      if (session?.user?.email) {
-        const userPlan = await getUserPlan(session.user.email);
-        setPlan(userPlan);
-      }
-    };
-    fetchPlan();
+    if (session?.user?.email) {
+      getUserPlan(session.user.email).then(setPlan).catch(console.error);
+    }
   }, [session?.user?.email]);
 
+  // Fetch favorites for Nestling users
   useEffect(() => {
     if (session?.user?.email) {
       fetch("/api/favorites")
         .then((res) => res.json())
-        .then((data: Favorite[]) => setFavorites(data));
+        .then((data: Favorite[]) => setFavorites(data))
+        .catch(console.error);
     }
   }, [session?.user?.email]);
 
   if (status === "loading") {
     return <p className="text-center mt-8 text-story-accent">Loading account info...</p>;
   }
-
   if (!session) {
     return (
       <div className="text-center mt-8 text-story-accent">
@@ -49,10 +47,11 @@ export default function YourAccountPage() {
     <div className="min-h-screen bg-story-bg text-story-accent font-body flex flex-col items-center px-4 py-12">
       <h1 className="text-4xl font-title mb-6">Your Account</h1>
 
-      <div className="max-w-xl w-full bg-white/80 backdrop-blur-sm border-2 border-storybook-border rounded-3xl shadow-storybook p-6 text-lg space-y-6 text-center">
-        {/* Profile Icon */}
-        <div className="flex justify-center">
-          {plan && (
+      {/* Profile Card */}
+      <div className="max-w-xl w-full bg-white/80 backdrop-blur-sm border-2 border-storybook-border rounded-3xl shadow-storybook p-6">
+        {/* Icon */}
+        {plan && (
+          <div className="flex justify-center">
             <Image
               src={`/images/${plan === "free" ? "hatchling" : "nestling"}.webp`}
               alt="Profile icon"
@@ -60,9 +59,12 @@ export default function YourAccountPage() {
               height={120}
               className="rounded-full"
             />
-          )}
+          </div>
+        )}
 
-          <p className="text-xl mt-4">
+        {/* Details */}
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-xl">
             <strong>Email:</strong> {session.user?.email}
           </p>
           <p>
@@ -70,36 +72,29 @@ export default function YourAccountPage() {
             {plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : "Loading..."}
           </p>
 
-          {plan === "free" && (
+          {/* Actions */}
+          {plan === "free" ? (
             <button
               onClick={() => router.push("/pricing")}
               className="mt-4 text-story-accent font-bold hover:underline transition"
             >
               Upgrade to Nestling
             </button>
-          )}
-
-          {plan === "nestling" && (
-            <>
-              <p className="text-green-700 font-semibold">
-                Thanks for supporting Fablenests! 💛
-              </p>
-              <button
-                onClick={async () => {
-                  const res = await fetch("/api/create-portal-session", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: session.user?.email }),
-                  });
-                  const data = await res.json();
-                  if (data.url) window.location.href = data.url;
-                  else alert("Could not create portal session.");
-                }}
-                className="mt-4 text-story-accent font-body bg-transparent border-none px-2 py-1 hover:underline focus:outline-none focus:ring-0 transition"
-              >
-                Manage Subscription
-              </button>
-            </>
+          ) : (
+            <button
+              onClick={async () => {
+                const res = await fetch("/api/create-portal-session", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email: session.user?.email }),
+                });
+                const { url } = await res.json();
+                if (url) window.location.href = url;
+              }}
+              className="mt-4 text-story-accent font-body bg-transparent border-none px-2 py-1 hover:underline focus:outline-none focus:ring-0 transition"
+            >
+              Manage Subscription
+            </button>
           )}
         </div>
       </div>
@@ -122,7 +117,9 @@ export default function YourAccountPage() {
                 </div>
                 <div className="flex space-x-4">
                   <Link
-                    href={`/story?title=${encodeURIComponent(fav.title)}&story=...`}
+                    href={`/story?title=${encodeURIComponent(fav.title)}&story=${encodeURIComponent(
+                      ""
+                    )}`} // replace "" with actual serialized story if you include it in GET
                     className="text-story-accent hover:underline transition"
                   >
                     Read
