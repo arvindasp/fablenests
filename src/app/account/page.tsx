@@ -7,24 +7,21 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-type Favorite = { id: string; title: string; created_at: string };
+type Favorite = { id: string; title: string; story: string; created_at: string };
 
 export default function YourAccountPage() {
   const { data: session, status } = useSession();
-  const [plan, setPlan] = useState<string | null>(null);
-  const router = useRouter();
+  const [plan, setPlan] = useState<string>("");
   const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const router = useRouter();
 
-  // Fetch user plan
   useEffect(() => {
     if (session?.user?.email) {
-      getUserPlan(session.user.email).then(setPlan).catch(console.error);
-    }
-  }, [session?.user?.email]);
-
-  // Fetch favorites for Nestling users
-  useEffect(() => {
-    if (session?.user?.email) {
+      // Fetch plan
+      getUserPlan(session.user.email)
+        .then((p) => setPlan(p))
+        .catch(console.error);
+      // Fetch favorites
       fetch("/api/favorites")
         .then((res) => res.json())
         .then((data: Favorite[]) => setFavorites(data))
@@ -49,9 +46,8 @@ export default function YourAccountPage() {
 
       {/* Profile Card */}
       <div className="max-w-xl w-full bg-white/80 backdrop-blur-sm border-2 border-storybook-border rounded-3xl shadow-storybook p-6">
-        {/* Icon */}
-        {plan && (
-          <div className="flex justify-center">
+        <div className="flex justify-center">
+          {plan && (
             <Image
               src={`/images/${plan === "free" ? "hatchling" : "nestling"}.webp`}
               alt="Profile icon"
@@ -59,20 +55,18 @@ export default function YourAccountPage() {
               height={120}
               className="rounded-full"
             />
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Details */}
         <div className="mt-6 text-center space-y-2">
           <p className="text-xl">
             <strong>Email:</strong> {session.user?.email}
           </p>
           <p>
             <strong>Plan:</strong>{' '}
-            {plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : "Loading..."}
+            {plan.charAt(0).toUpperCase() + plan.slice(1)}
           </p>
 
-          {/* Actions */}
           {plan === "free" ? (
             <button
               onClick={() => router.push("/pricing")}
@@ -86,10 +80,10 @@ export default function YourAccountPage() {
                 const res = await fetch("/api/create-portal-session", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email: session.user?.email }),
+                  body: JSON.stringify({ email: session.user!.email }),
                 });
-                const { url } = await res.json();
-                if (url) window.location.href = url;
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
               }}
               className="mt-4 text-story-accent font-body bg-transparent border-none px-2 py-1 hover:underline focus:outline-none focus:ring-0 transition"
             >
@@ -117,9 +111,7 @@ export default function YourAccountPage() {
                 </div>
                 <div className="flex space-x-4">
                   <Link
-                    href={`/story?title=${encodeURIComponent(fav.title)}&story=${encodeURIComponent(
-                      ""
-                    )}`} // replace "" with actual serialized story if you include it in GET
+                    href={`/story?title=${encodeURIComponent(fav.title)}&story=${encodeURIComponent(fav.story)}`}
                     className="text-story-accent hover:underline transition"
                   >
                     Read
