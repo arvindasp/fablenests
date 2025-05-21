@@ -1,11 +1,10 @@
 // src/app/api/favorites/route.ts
-import { supabaseAdmin } from "@/lib/supabaseAdmin";  // service-role for writes
-import { supabase } from "@/lib/supabase";            // anon for reads
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";  // service-role client
 
-// POST /api/favorites
+// POST /api/favorites → save a new favorite
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -29,16 +28,17 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ message: "Saved to favorites!" });
 }
 
-// GET /api/favorites
+// GET /api/favorites → list your favorites
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
   }
 
-  const { data, error } = await supabase
+  // Use the service-role client to bypass RLS and pull all your rows:
+  const { data, error } = await supabaseAdmin
     .from("favorites")
-    .select("id, title, created_at")
+    .select("id, title, story, created_at")
     .eq("email", session.user.email)
     .order("created_at", { ascending: false });
 
