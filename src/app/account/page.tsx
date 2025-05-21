@@ -123,7 +123,7 @@ export default function YourAccountPage() {
                     }}
                     className="text-red-500 hover:underline transition"
                   >
-                    Remove
+                    Remove 
                   </button>
                 </div>
               </li>
