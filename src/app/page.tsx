@@ -31,27 +31,46 @@ export default function HomePage() {
       alert("You must be logged in to generate a story.");
       return;
     }
+  
     setLoading(true);
+    let data: any;
+    let res: Response;
+  
     try {
-      const res = await fetch("/api/generate", {
+      res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme, genre, language, email: session.user.email }),
+        body: JSON.stringify({
+          theme,
+          genre,
+          language,
+          email: session.user.email,
+        }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Generation failed");
-      router.push(
-        `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(
-          data.story
-        )}`
-      );
-    } catch (error) {
-      console.error(error);
+      data = await res.json();
+    } catch (err) {
+      console.error("Network error:", err);
       alert("Something went wrong while generating your story.");
-    } finally {
       setLoading(false);
+      return;
     }
+  
+    if (!res.ok) {
+      // Show the API’s own error (e.g. daily-limit)
+      alert(data.error || "Something went wrong while generating your story.");
+      setLoading(false);
+      return;
+    }
+  
+    // Success – navigate to the story page
+    router.push(
+      `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(
+        data.story
+      )}`
+    );
+    setLoading(false);
   };
+  
 
   return (
     <div className="min-h-screen bg-story-bg text-story-accent font-body flex flex-col items-center px-6 py-16">
