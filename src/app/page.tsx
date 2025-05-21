@@ -135,13 +135,14 @@ export default function HomePage() {
   onClick={generateStory}
   disabled={loading}
   className="
-    text-story-accent font-bold text-xl
-    bg-white/30
-    px-4 py-2 rounded-xl
-    hover:bg-white/50 hover:underline
-    focus:outline-none focus:ring-0
-    transition
-  "
+text-story-accent font-bold text-xl
+bg-transparent border-none
+px-2 py-1
+hover:underline hover:text-blue-400
+focus:outline-none focus:ring-0
+active:text-blue-400
+transition
+"
 >
   {loading ? "Generating…" : "Generate Story"}
 </motion.button>

@@ -70,7 +70,15 @@ export default function YourAccountPage() {
           {plan === "free" ? (
             <button
               onClick={() => router.push("/pricing")}
-              className="mt-4 text-story-accent font-bold hover:underline transition"
+              className="
+mt-4
+text-story-accent font-bold
+bg-transparent border-none
+hover:underline hover:text-blue-400
+focus:outline-none focus:ring-0
+active:text-blue-400
+transition
+"
             >
               Upgrade to Nestling
             </button>

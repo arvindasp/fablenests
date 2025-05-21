@@ -28,13 +28,13 @@ export default function AuthStatus() {
       <button
   onClick={() => signIn("google")}
   className="
-    text-story-accent font-body
-    hover:underline
-    bg-transparent border-none
-    px-2 py-1
-    focus:outline-none focus:ring-0
-    transition
-  "
+text-story-accent font-body
+bg-transparent border-none
+hover:underline hover:text-blue-400
+focus:outline-none focus:ring-0
+active:text-blue-400
+transition
+"
 >
   Login
 </button>
