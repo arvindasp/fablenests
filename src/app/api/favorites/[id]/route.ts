@@ -2,42 +2,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function DELETE(request: NextRequest) {
-  // 1) Auth check
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
-    return NextResponse.json(
-      { error: "Not authenticated." },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
   }
 
-  // 2) Extract the `id` from the URL
+  // Extract the ID from the URL
   const url = new URL(request.url);
-  const parts = url.pathname.split("/");
-  const id = parts[parts.length - 1];
+  const id = url.pathname.split("/").pop();
   if (!id) {
-    return NextResponse.json(
-      { error: "Missing favorite ID in URL." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing favorite ID." }, { status: 400 });
   }
 
-  // 3) Delete only the row matching both id and user email
-  const { error } = await supabase
+  // Use the admin client to bypass RLS and delete the row
+  const { error } = await supabaseAdmin
     .from("favorites")
     .delete()
     .eq("id", id)
     .eq("email", session.user.email);
 
   if (error) {
-    console.error("Supabase DELETE error:", error);
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    console.error("Delete failed:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json({ message: "Deleted." });

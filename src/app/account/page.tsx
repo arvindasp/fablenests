@@ -121,7 +121,11 @@ export default function YourAccountPage() {
                       await fetch(`/api/favorites/${fav.id}`, { method: "DELETE" });
                       setFavorites((prev) => prev.filter((x) => x.id !== fav.id));
                     }}
-                    className="text-red-500 hover:underline transition"
+                    className="
+text-red-500 hover:underline transition
+bg-transparent border-none p-0
+focus:outline-none focus:ring-0
+"
                   >
                     Remove
                   </button>
