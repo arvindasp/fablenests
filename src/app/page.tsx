@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { useSession }         from "next-auth/react";
+import { useRouter }          from "next/navigation";
+import Image                  from "next/image";
+import { motion }             from "framer-motion";
 
 export default function HomePage() {
   const { data: session } = useSession();
-  const router = useRouter();
+  const router            = useRouter();
 
-  const [theme, setTheme] = useState("");
-  const [genre, setGenre] = useState("Adventure");
+  const [theme, setTheme]       = useState("");
+  const [genre, setGenre]       = useState("Adventure");
   const [language, setLanguage] = useState("English");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]   = useState(false);
 
   const genres = [
     "Adventure",
@@ -24,6 +24,7 @@ export default function HomePage() {
     "Sci-Fi",
     "Fairy Tale",
   ];
+
   const languages = ["English", "Svenska", "Español", "Français"];
 
   const generateStory = async () => {
@@ -33,40 +34,58 @@ export default function HomePage() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/generate", {
+      // 1) generate text & usage check
+      const storyRes = await fetch("/api/storyGeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme, genre, language, email: session.user.email }),
+        body: JSON.stringify({
+          theme,
+          genre,
+          language,
+          email: session.user.email,
+        }),
       });
-  
-      // parse JSON regardless of status
-      const data = await res.json();
-  
-      if (!res.ok) {
-        // throw the real error out of the API
-        throw new Error(data.error || "Generation failed");
+      const storyData = await storyRes.json();
+      if (!storyRes.ok) throw new Error(storyData.error || "Story generation failed");
+
+      const { story, title, plan } = storyData;
+
+      // 2) generate images
+      const imgRes = await fetch("/api/imageGeneration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          theme,
+          email: session.user.email,
+          plan,
+        }),
+      });
+      let images: string[] = [];
+      if (imgRes.ok) {
+        const imgData = await imgRes.json();
+        images = imgData.images;
       }
-  
-      router.push(
-        `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(
-          data.story
-        )}`
-      );
+
+      // 3) navigate with everything in the query
+      const params = new URLSearchParams({
+        title,
+        story,
+        images: JSON.stringify(images),
+      });
+      router.push(`/story?${params.toString()}`);
     } catch (err: any) {
       console.error(err);
-      // show the specific API error (e.g. daily limit)
       alert(err.message);
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-story-bg text-story-accent font-body flex flex-col items-center px-6 py-16">
       {/* Page Title */}
       <h1 className="text-5xl md:text-5xl font-title mb-10 text-center leading-snug">
-        Fablenests -
+        Fablenests —
         <br />
         Create Magical Stories
       </h1>
@@ -122,20 +141,20 @@ export default function HomePage() {
           </div>
 
           <motion.button
-  onClick={generateStory}
-  disabled={loading}
-  className="
-text-story-accent font-bold text-xl
-bg-transparent border-none
-px-2 py-1
-hover:underline hover:text-blue-400
-focus:outline-none focus:ring-0
-active:text-blue-400
-transition
-"
->
-  {loading ? "Generating…" : "Generate Story"}
-</motion.button>
+            onClick={generateStory}
+            disabled={loading}
+            className="
+              text-story-accent font-bold text-xl
+              bg-transparent border-none
+              px-2 py-1
+              hover:underline hover:text-blue-400
+              focus:outline-none focus:ring-0
+              active:text-blue-400
+              transition
+            "
+          >
+            {loading ? "Generating…" : "Generate Story"}
+          </motion.button>
         </div>
 
         {/* Right Illustration */}

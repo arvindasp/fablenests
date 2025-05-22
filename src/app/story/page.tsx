@@ -14,6 +14,14 @@ function StoryReader() {
   const searchParams = useSearchParams();
   const storyParam = searchParams.get("story") || "";
   const titleParam = searchParams.get("title") || "Your Story";
+  // 1) grab & parse the images array from the query string
+const rawImages = searchParams.get("images") || "[]";
+let images: string[] = [];
+try {
+images = JSON.parse(rawImages);
+} catch {
+images = [];
+}
 
   const [pages, setPages] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -67,44 +75,54 @@ function StoryReader() {
       </div>
 
       <HTMLFlipBook
-        width={500}
-        height={600}
-        size="stretch"
-        minWidth={315}
-        maxWidth={600}
-        minHeight={400}
-        maxHeight={800}
-        maxShadowOpacity={0.5}
-        showCover={false}
-        mobileScrollSupport={true}
-        className="storybook-flipbook"
-      >
-        {pages.map((pageText, index) => (
-          <div
-            key={index}
-            className="
-              bg-white
-              text-story-accent
-              font-body
-              p-8 text-lg leading-relaxed
-              border-4 border-storybook-border
-              rounded-2xl shadow-xl
-              whitespace-pre-line overflow-y-auto max-h-[500px]
-            "
-          >
-            {index === 0 ? (
-              <>
-                <span className="drop-cap text-4xl font-bold float-left mr-2 leading-none">
-                  {pageText.charAt(0)}
-                </span>
-                {pageText.slice(1)}
-              </>
-            ) : (
-              pageText
-            )}
-          </div>
-        ))}
-      </HTMLFlipBook>
+  width={500}
+  height={600}
+  size="stretch"
+  minWidth={315}
+  maxWidth={600}
+  minHeight={400}
+  maxHeight={800}
+  maxShadowOpacity={0.5}
+  showCover={false}
+  mobileScrollSupport={true}
+  className="storybook-flipbook"
+>
+  {pages.map((pageText, index) => (
+    <div
+      key={index}
+      className="
+        bg-white
+        text-story-accent
+        font-body
+        p-8 text-lg leading-relaxed
+        border-4 border-storybook-border
+        rounded-2xl shadow-xl
+        whitespace-pre-line overflow-y-auto max-h-[500px]
+      "
+    >
+      {/* Illustration for this page */}
+      {images[index] && (
+        <img
+          src={images[index]}
+          alt={`Illustration for page ${index + 1}`}
+          className="mb-4 w-full max-w-[450px] rounded-lg shadow-md mx-auto"
+        />
+      )}
+
+      {/* Story text */}
+      {index === 0 ? (
+        <>
+          <span className="drop-cap text-4xl font-bold float-left mr-2 leading-none">
+            {pageText.charAt(0)}
+          </span>
+          {pageText.slice(1)}
+        </>
+      ) : (
+        pageText
+      )}
+    </div>
+  ))}
+</HTMLFlipBook>
 
       <p className="mt-6 text-sm font-body text-story-accent/70 text-center">
         💡 Tap or swipe to flip the page
