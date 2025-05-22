@@ -31,44 +31,34 @@ export default function HomePage() {
       alert("You must be logged in to generate a story.");
       return;
     }
-  
     setLoading(true);
-    let data: any;
-    let res: Response;
-  
     try {
-      res = await fetch("/api/generate", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          theme,
-          genre,
-          language,
-          email: session.user.email,
-        }),
+        body: JSON.stringify({ theme, genre, language, email: session.user.email }),
       });
-      data = await res.json();
-    } catch (err) {
-      console.error("Network error:", err);
-      alert("Something went wrong while generating your story.");
-      setLoading(false);
-      return;
-    }
   
-    if (!res.ok) {
-      // Show the API’s own error (e.g. daily-limit)
-      alert(data.error || "Something went wrong while generating your story.");
-      setLoading(false);
-      return;
-    }
+      // parse JSON regardless of status
+      const data = await res.json();
   
-    // Success – navigate to the story page
-    router.push(
-      `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(
-        data.story
-      )}`
-    );
-    setLoading(false);
+      if (!res.ok) {
+        // throw the real error out of the API
+        throw new Error(data.error || "Generation failed");
+      }
+  
+      router.push(
+        `/story?title=${encodeURIComponent(data.title)}&story=${encodeURIComponent(
+          data.story
+        )}`
+      );
+    } catch (err: any) {
+      console.error(err);
+      // show the specific API error (e.g. daily limit)
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
   
 
