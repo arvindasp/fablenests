@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: `You are a children's story author. Write a short bedtime story (250-350 words) for kids. The story should be a ${genre.toLowerCase()} and written in ${language}.`,
+          content: `You are a children's story author. Write a short bedtime story (450-550 words) for kids. The story should be a ${genre.toLowerCase()} and written in ${language}.`,
         },
         {
           role: "user",

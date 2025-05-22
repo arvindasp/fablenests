@@ -25,7 +25,7 @@ export default function OurMissionPage() {
         </p>
 
         <p className="font-semibold text-gray-700">
-          10% of all revenue goes directly to children's charities.
+          15% of all revenue goes directly to children's charities.
         </p>
 
         <p className="text-base text-gray-600 italic">
