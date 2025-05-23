@@ -1,31 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { useSession }       from "next-auth/react";
+import { useRouter }        from "next/navigation";
+import Image                from "next/image";
+import { motion }           from "framer-motion";
 
 export default function HomePage() {
   const { data: session } = useSession();
-  const router = useRouter();
+  const router            = useRouter();
 
-  const [theme, setTheme] = useState("");
-  const [genre, setGenre] = useState("Adventure");
+  const [theme, setTheme]       = useState("");
+  const [genre, setGenre]       = useState("Adventure");
   const [language, setLanguage] = useState("English");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]   = useState(false);
 
-  const genres = [
-    "Adventure",
-    "Comedy",
-    "Feel-Good",
-    "Mystery",
-    "Magical",
-    "Sci-Fi",
-    "Fairy Tale",
-  ];
-
-  const languages = ["English", "Svenska", "Español", "Français"];
+  const genres    = ["Adventure","Comedy","Feel-Good","Mystery","Magical","Sci-Fi","Fairy Tale"];
+  const languages = ["English","Svenska","Español","Français"];
 
   const generateStory = async () => {
     if (!session?.user?.email) {
@@ -35,42 +26,29 @@ export default function HomePage() {
     setLoading(true);
 
     try {
-      // 1) generate text & usage check
+      // 1) generate story & check usage
       const storyRes = await fetch("/api/storygeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ theme, genre, language, email: session.user.email }),
       });
-
-      // if it failed, try to pull out an error message
+      const storyPayload = await storyRes.json();
       if (!storyRes.ok) {
-        let msg: string;
-        try {
-          const err = await storyRes.json();
-          msg = err.error || JSON.stringify(err);
-        } catch {
-          msg = await storyRes.text();
-        }
-        throw new Error(msg || `Story gen failed (${storyRes.status})`);
+        // our API always returns { error: string } on failure
+        throw new Error(storyPayload.error || `Story gen failed (${storyRes.status})`);
       }
-
-      const { story, title, plan } = await storyRes.json();
+      const { story, title, plan } = storyPayload;
 
       // 2) generate images
-      const imgRes = await fetch("/api/imagegeneration", {
+      const imgRes     = await fetch("/api/imagegeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ theme, email: session.user.email, plan }),
       });
-
       let images: string[] = [];
       if (imgRes.ok) {
-        try {
-          const imgData = await imgRes.json();
-          images = imgData.images || [];
-        } catch {
-          // ignore JSON parse errors
-        }
+        const imgPayload = await imgRes.json();
+        images = Array.isArray(imgPayload.images) ? imgPayload.images : [];
       }
 
       // 3) navigate with everything in the query
@@ -80,6 +58,7 @@ export default function HomePage() {
         images: JSON.stringify(images),
       });
       router.push(`/story?${params.toString()}`);
+
     } catch (err: any) {
       console.error(err);
       alert(err.message);
