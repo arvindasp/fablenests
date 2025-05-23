@@ -39,34 +39,38 @@ export default function HomePage() {
       const storyRes = await fetch("/api/storygeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          theme,
-          genre,
-          language,
-          email: session.user.email,
-        }),
+        body: JSON.stringify({ theme, genre, language, email: session.user.email }),
       });
-      const storyData = await storyRes.json();
+
+      // if it failed, try to pull out an error message
       if (!storyRes.ok) {
-        throw new Error(storyData.error || "Story generation failed");
+        let msg: string;
+        try {
+          const err = await storyRes.json();
+          msg = err.error || JSON.stringify(err);
+        } catch {
+          msg = await storyRes.text();
+        }
+        throw new Error(msg || `Story gen failed (${storyRes.status})`);
       }
-      const { story, title, plan } = storyData;
+
+      const { story, title, plan } = await storyRes.json();
 
       // 2) generate images
       const imgRes = await fetch("/api/imagegeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          theme,
-          email: session.user.email,
-          plan,
-        }),
+        body: JSON.stringify({ theme, email: session.user.email, plan }),
       });
 
       let images: string[] = [];
       if (imgRes.ok) {
-        const imgData = await imgRes.json();
-        images = imgData.images || [];
+        try {
+          const imgData = await imgRes.json();
+          images = imgData.images || [];
+        } catch {
+          // ignore JSON parse errors
+        }
       }
 
       // 3) navigate with everything in the query
