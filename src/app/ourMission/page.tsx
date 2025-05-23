@@ -13,7 +13,7 @@ export default function OurMissionPage() {
         </p>
 
         <p>
-          That’s why we create magical, personalized stories — and why we donate a portion of our revenue to organizations that help children around the world.
+          That’s why we create magical, personalized stories — and also why we donate a portion of our revenue to organizations that help children around the world.
         </p>
 
         <p>
