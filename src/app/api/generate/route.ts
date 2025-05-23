@@ -89,22 +89,19 @@ export async function POST(req: NextRequest) {
     );
   if (upsertErr) console.error("Usage upsert failed:", upsertErr);
 
-  // 4) generate & store images
-  const numImages = user.plan === "nestling" ? 3 : 1;
+  // 4) generate & store exactly one image
   const prompt = `A vintage Aesop-style fable illustration of "${theme}", children's book watercolor style.`;
-  const imageUrls: string[] = [];
+  let imageUrl: string | null = null;
 
   try {
-    const res = await openai.images.generate({
+    const imgRes = await openai.images.generate({
       prompt,
-      n: numImages,
-      size: "512x512",
+      n: 1,
+      size: "256x256",
     });
 
-    for (let i = 0; i < res.data.length; i++) {
-      const url = res.data[i].url;
-      if (!url) continue;
-
+    const url = imgRes.data?.[0]?.url;
+    if (url) {
       const resp = await fetch(url);
       const buf = Buffer.from(await resp.arrayBuffer());
 
@@ -118,24 +115,22 @@ export async function POST(req: NextRequest) {
         });
       if (upErr) console.error("Image upload error:", upErr);
 
-      const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/story-images/${path}`;
-      imageUrls.push(publicUrl);
+      imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/story-images/${path}`;
 
       const { error: metaErr } = await supabaseAdmin
         .from("story_images")
-        .insert([{
-          email,
-          story_date: today,
-          page_index: i,
-          image_url: publicUrl,
-        }]);
+        .insert([{ email, story_date: today, page_index: 0, image_url: imageUrl }]);
       if (metaErr) console.error("story_images insert error:", metaErr);
     }
-  } catch (imgErr) {
-    console.error("Image gen/upload error:", imgErr);
-    // still return the story even if images fail
+  } catch (err) {
+    console.error("Image gen/upload error:", err);
+    // still return story even if image fails
   }
 
   // 5) return everything
-  return NextResponse.json({ title, story, images: imageUrls });
-}
+  return NextResponse.json({
+    title,
+    story,
+    imageUrl,   // single string or null
+  });
+} // <-- closes POST function

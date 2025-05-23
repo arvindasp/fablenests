@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSession }         from "next-auth/react";
-import { useRouter }          from "next/navigation";
-import Image                  from "next/image";
-import { motion }             from "framer-motion";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function HomePage() {
   const { data: session } = useSession();
-  const router            = useRouter();
+  const router = useRouter();
 
-  const [theme, setTheme]       = useState("");
-  const [genre, setGenre]       = useState("Adventure");
+  const [theme, setTheme] = useState("");
+  const [genre, setGenre] = useState("Adventure");
   const [language, setLanguage] = useState("English");
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const genres = [
     "Adventure",
@@ -33,9 +33,10 @@ export default function HomePage() {
       return;
     }
     setLoading(true);
+
     try {
       // 1) generate text & usage check
-      const storyRes = await fetch("/api/storyGeneration", {
+      const storyRes = await fetch("/api/storygeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,12 +47,13 @@ export default function HomePage() {
         }),
       });
       const storyData = await storyRes.json();
-      if (!storyRes.ok) throw new Error(storyData.error || "Story generation failed");
-
+      if (!storyRes.ok) {
+        throw new Error(storyData.error || "Story generation failed");
+      }
       const { story, title, plan } = storyData;
 
       // 2) generate images
-      const imgRes = await fetch("/api/imageGeneration", {
+      const imgRes = await fetch("/api/imagegeneration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -60,10 +62,11 @@ export default function HomePage() {
           plan,
         }),
       });
+
       let images: string[] = [];
       if (imgRes.ok) {
         const imgData = await imgRes.json();
-        images = imgData.images;
+        images = imgData.images || [];
       }
 
       // 3) navigate with everything in the query
