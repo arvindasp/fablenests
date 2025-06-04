@@ -19,9 +19,8 @@ export default function PricingPage() {
           <ul className="text-left space-y-2 text-gray-800">
             <li>✅ 1 story per day</li>
             <li>✅ Short story length</li>
-            <li>🚫 No audio narration</li>
+            <li>🚫 Save up to 3 stories</li>
             <li>🚫 No custom illustrations</li>
-            <li>🚫 Cannot save stories</li>
           </ul>
           <button
             disabled
@@ -41,9 +40,8 @@ export default function PricingPage() {
           <ul className="text-left space-y-2 text-blue-900">
             <li>✅ Longer stories</li>
             <li>✅ Up to 5 stories per day</li>
-            <li>🕐 Audio narration (coming June 1)</li>
-            <li>🕐 Save your favorite stories (coming June 1)</li>
-            <li>🕐 Custom illustrations (coming June 1)</li>
+            <li>✅ Save unlimited stories</li>
+            <li>🕐 Custom illustrations (coming June 8)</li>
           </ul>
 
           <div className="mt-6 w-full">
