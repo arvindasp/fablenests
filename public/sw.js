@@ -1,46 +1,45 @@
 // public/sw.js
 
-const CACHE_NAME = 'fablenests-static-v1';
-
+// 1. Skip waiting and claim clients so the new SW is active right away
 self.addEventListener('install', (evt) => {
-  // Activate right away
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (evt) => {
-  // Claim clients immediately so the SW starts controlling pages
-  evt.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (evt) => {
-  const { request } = evt;
-  const url = new URL(request.url);
-
-  // 1) Bypass all /api/* routes
-  if (url.pathname.startsWith('/api/')) {
-    evt.respondWith(fetch(request));
-    return;
-  }
-
-  // 2) Bypass any non-GET (e.g. POST for form submissions, etc)
-  if (request.method !== 'GET') {
-    evt.respondWith(fetch(request));
-    return;
-  }
-
-  // 3) Cache-first for everything else
-  evt.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-      return fetch(request).then((networkResp) => {
-        // we can decide whether to cache it—here we cache all GETs:
-        return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(request, networkResp.clone());
-          return networkResp;
+    self.skipWaiting();
+  });
+  self.addEventListener('activate', (evt) => {
+    evt.waitUntil(self.clients.claim());
+  });
+  
+  // 2. Intercept all fetches
+  self.addEventListener('fetch', (evt) => {
+    const { request } = evt;
+    const url = new URL(request.url);
+  
+    // Always bypass anything that isn't HTTP/HTTPS (e.g. chrome-extension://…)
+    if (!url.protocol.startsWith('http')) {
+      return evt.respondWith(fetch(request));
+    }
+  
+    // Always bypass API calls (GET, POST, OPTIONS, whatever)
+    if (url.pathname.startsWith('/api/')) {
+      return evt.respondWith(fetch(request));
+    }
+  
+    // Only try to cache GETs, pass everything else straight through
+    if (request.method !== 'GET') {
+      return evt.respondWith(fetch(request));
+    }
+  
+    // At this point you can implement your caching strategy.
+    // For example, “cache-first, then network”:
+    evt.respondWith(
+      caches.match(request).then((cached) => {
+        return cached || fetch(request).then((networkRes) => {
+          // Optionally cache the new response
+          return caches.open('fablenests-v1').then((cache) => {
+            cache.put(request, networkRes.clone());
+            return networkRes;
+          });
         });
-      });
-    })
-  );
-});
+      })
+    );
+  });
+  
