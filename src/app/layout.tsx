@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import AuthProvider from "@/components/AuthProvider";
 import AuthStatus from "@/components/AuthStatus";
 import Image from "next/image";
-import SWRegister from "@/components/SWRegister";
 
 export const metadata: Metadata = {
   title: "Fablenests – AI Bedtime Stories",
@@ -39,7 +38,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="font-body">
       <body className="bg-story-bg text-story-accent">
-        <SWRegister />
         <AuthProvider>
           <header className="sticky top-0 z-50 w-full bg-story-bg shadow-md">
             <div className="max-w-6xl mx-auto flex items-center py-5 px-8 md:px-12">
