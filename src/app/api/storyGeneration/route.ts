@@ -12,6 +12,7 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: NextRequest) {
+  console.log('🥚 hit storygeneration')
   // 1) Parse & validate
   const { theme, genre, language, email } = await req.json();
   if (!email) {
